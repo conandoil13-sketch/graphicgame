@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grid Alchemist: The Ultimate Artistic Studio</title>
+    <title>Grid Alchemist: 60x60 Ultra Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -189,7 +189,6 @@
             background-color: black;
         }
 
-        /* HEX Input Styling */
         #hex-input {
             background: transparent;
             border: none;
@@ -208,7 +207,7 @@
         <div class="max-w-6xl w-full flex flex-col items-center">
             <div class="flex items-center gap-2 text-cyan-400 mb-4">
                 <i data-lucide="palette" class="w-6 h-6 animate-pulse"></i>
-                <span class="text-xs font-bold tracking-[0.5em] uppercase">Visual DNA Initialization</span>
+                <span class="text-xs font-bold tracking-[0.5em] uppercase">Visual DNA Initialization [60x60]</span>
             </div>
             <h1 class="text-5xl md:text-7xl font-black italic tracking-tighter text-white uppercase text-center mb-10">
                 Configure Studio</h1>
@@ -299,9 +298,9 @@
                                 <button onclick="applyPreset('BAUHAUS')"
                                     class="py-2 border border-white/5 hover:border-white/20 transition-all text-[8px] font-bold uppercase bg-white/5">Bauhaus</button>
                                 <button onclick="applyPreset('CYBER')"
-                                    class="py-2 border border-white/5 hover:border-white/20 transition-all text-[8px] font-bold uppercase bg-white/5">Cyber</button>
+                                    class="py-2 border border-white/5 hover:border-white/30 transition-all text-[8px] font-bold uppercase bg-white/5">Cyber</button>
                                 <button onclick="applyPreset('MONO')"
-                                    class="py-2 border border-white/5 hover:border-white/20 transition-all text-[8px] font-bold uppercase bg-white/5">Mono</button>
+                                    class="py-2 border border-white/5 hover:border-white/30 transition-all text-[8px] font-bold uppercase bg-white/5">Mono</button>
                                 <button onclick="applyPreset('SYNTH')"
                                     class="py-2 border border-white/5 hover:border-white/20 transition-all text-[8px] font-bold uppercase bg-white/5">Synth</button>
                                 <button onclick="applyPreset('EARTH')"
@@ -333,13 +332,13 @@
                 <div class="flex items-center justify-center lg:justify-start gap-2 text-cyan-400 mb-2">
                     <i data-lucide="zap" class="w-4 h-4 animate-pulse"></i>
                     <span id="mode-label"
-                        class="text-[10px] font-bold tracking-[0.6em] uppercase">Computational.Art.Studio.v13</span>
+                        class="text-[10px] font-bold tracking-[0.6em] uppercase">Computational.Art.Studio.60x60</span>
                 </div>
                 <h1 class="text-5xl md:text-7xl font-black italic tracking-tighter text-white uppercase leading-none">
                     Grid Alchemist</h1>
                 <p id="palette-indicator"
-                    class="text-[11px] text-slate-500 mt-4 font-bold tracking-[0.2em] uppercase italic">>>> Neural
-                    Engine Optimized</p>
+                    class="text-[11px] text-slate-500 mt-4 font-bold tracking-[0.2em] uppercase italic">>>>
+                    High-Resolution 3,600 Node Matrix Active</p>
             </div>
             <div class="flex flex-wrap justify-center gap-3">
                 <button id="blend-toggle" onclick="toggleBlendMode()"
@@ -385,8 +384,8 @@
                         <i data-lucide="trophy" class="w-16 h-16 text-amber-500 mb-6"></i>
                         <h2 class="text-3xl font-black text-white uppercase tracking-[0.3em] mb-2 text-center">Creation
                             Finalized</h2>
-                        <p class="text-xs text-slate-500 uppercase tracking-widest mb-10">Challenge Mode Accomplished.
-                        </p>
+                        <p class="text-xs text-slate-500 uppercase tracking-widest mb-10">60x60 Challenge Mode
+                            Accomplished.</p>
                         <button onclick="exportImage('radial')"
                             class="px-10 py-4 bg-cyan-600 text-black text-xs font-black uppercase tracking-[0.5em] hover:bg-white transition-all">Export
                             Artwork</button>
@@ -414,13 +413,13 @@
                         <i data-lucide="terminal" class="w-4 h-4"></i> Protocol_Stream.log</h2>
                     <div id="history-log"
                         class="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-2 font-mono text-[10px]">
-                        <div class="text-slate-800 italic uppercase">Initializing Workspace...</div>
+                        <div class="text-slate-800 italic uppercase">Initializing 60x60 Workspace...</div>
                     </div>
                 </div>
 
                 <div class="space-y-4">
                     <div class="flex justify-between items-center border-b border-white/5 pb-3">
-                        <h2 class="text-[10px] font-black text-white uppercase tracking-[0.4em]">Protocol Hand</h2>
+                        <h2 class="text-[10px] font-black text-white uppercase tracking-[0.4em]">Design Protocol</h2>
                         <button id="reroll-btn" onclick="rerollHand()"
                             class="flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-bold text-cyan-400 hover:text-white transition-colors border border-cyan-400/30 hover:bg-cyan-400/20 rounded-sm disabled:opacity-30 disabled:cursor-not-allowed">
                             <i data-lucide="refresh-ccw" class="w-3 h-3"></i> Reroll Hand
@@ -440,7 +439,7 @@
     <canvas id="export-canvas" style="display:none;"></canvas>
 
     <script>
-        const GRID_SIZE = 48;
+        const GRID_SIZE = 60; // 캔버스 크기 상향
         const TOTAL = GRID_SIZE * GRID_SIZE;
         const MID = GRID_SIZE / 2;
         let cells = [];
@@ -558,20 +557,20 @@
         const CARD_TEMPLATES = [
             {
                 name: 'STEP SAMPLER', type: 'Logic', icon: 'hash', create: () => {
-                    const col = getStudioColor(); const n = Math.floor(Math.random() * 8) + 4;
-                    return { color: col, desc: `${n}번째 데이터 슬롯마다 정밀하게 픽셀을 배치합니다.`, logic: (c) => c.map((x, i) => i % n === 0 ? { ...x, active: true, color: col } : x) };
+                    const col = getStudioColor(); const n = Math.floor(Math.random() * 10) + 5;
+                    return { color: col, desc: `${n}번째 데이터마다 정밀하게 픽셀을 배치합니다.`, logic: (c) => c.map((x, i) => i % n === 0 ? { ...x, active: true, color: col } : x) };
                 }
             },
             {
                 name: 'MODULO MESH', type: 'Logic', icon: 'grid', create: () => {
-                    const col = getStudioColor(); const m = Math.floor(Math.random() * 5) + 4;
+                    const col = getStudioColor(); const m = Math.floor(Math.random() * 6) + 6;
                     return { color: col, desc: `${m}픽셀 주기로 기하학적 격자망을 형성합니다.`, logic: (c) => c.map(x => (x.x % m === 0 || x.y % m === 0) ? { ...x, active: true, color: col } : x) };
                 }
             },
             {
                 name: 'CONCENTRIC RINGS', type: 'Gen', icon: 'target', create: () => {
-                    const col = getStudioColor(); const gap = 3 + Math.random() * 5;
-                    return { color: col, desc: `${gap.toFixed(0)}픽셀 주기의 동심원 패턴을 중첩합니다.`, logic: (c) => c.map(x => (Math.floor(Math.sqrt((x.x - 23.5) ** 2 + (x.y - 23.5) ** 2)) % Math.floor(gap) === 0) ? { ...x, active: true, color: col } : x) };
+                    const col = getStudioColor(); const gap = 4 + Math.random() * 6;
+                    return { color: col, desc: `${gap.toFixed(0)}픽셀 주기의 동심원 패턴을 중첩합니다.`, logic: (c) => c.map(x => (Math.floor(Math.sqrt((x.x - (GRID_SIZE / 2 - 0.5)) ** 2 + (x.y - (GRID_SIZE / 2 - 0.5)) ** 2)) % Math.floor(gap) === 0) ? { ...x, active: true, color: col } : x) };
                 }
             },
             {
@@ -593,9 +592,10 @@
             {
                 name: 'ANGULAR SYM', type: 'Spatial', icon: 'refresh-ccw', create: () => ({
                     color: '#fbbf24', desc: `중심 기반 4방향 회전 대칭 조형을 완성합니다.`, logic: (c) => {
-                        const next = [...c]; for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) {
-                            const s = c[y * 48 + x]; if (!s.active) continue;
-                            [[47 - x, y], [x, 47 - y], [47 - x, 47 - y]].forEach(([sx, sy]) => { next[sy * 48 + sx] = { ...s, x: sx, y: sy, active: true }; });
+                        const next = [...c]; const limit = GRID_SIZE / 2;
+                        for (let y = 0; y < limit; y++) for (let x = 0; x < limit; x++) {
+                            const s = c[y * GRID_SIZE + x]; if (!s.active) continue;
+                            [[(GRID_SIZE - 1) - x, y], [x, (GRID_SIZE - 1) - y], [(GRID_SIZE - 1) - x, (GRID_SIZE - 1) - y]].forEach(([sx, sy]) => { next[sy * GRID_SIZE + sx] = { ...s, x: sx, y: sy, active: true }; });
                         } return next;
                     }
                 })
@@ -605,17 +605,17 @@
                     const n = [6, 8, 12, 16][Math.floor(Math.random() * 4)];
                     return {
                         color: '#fbbf24', desc: `${n}분할 무작위 만화경 대칭으로 기하학적 미학을 극대화합니다.`, logic: (c) => {
-                            const next = [...c]; const centerX = 23.5, centerY = 23.5;
+                            const next = [...c]; const center = GRID_SIZE / 2 - 0.5;
                             const angleStep = (Math.PI * 2) / n;
                             c.forEach(p => {
                                 if (!p.active) return;
-                                const dx = p.x - centerX, dy = p.y - centerY;
+                                const dx = p.x - center, dy = p.y - center;
                                 const r = Math.sqrt(dx * dx + dy * dy);
                                 const startAngle = Math.atan2(dy, dx);
                                 for (let i = 1; i < n; i++) {
                                     const curAngle = startAngle + i * angleStep;
-                                    const nx = Math.round(centerX + r * Math.cos(curAngle)), ny = Math.round(centerY + r * Math.sin(curAngle));
-                                    if (nx >= 0 && nx < 48 && ny >= 0 && ny < 48) next[ny * 48 + nx] = { ...p, x: nx, y: ny };
+                                    const nx = Math.round(center + r * Math.cos(curAngle)), ny = Math.round(center + r * Math.sin(curAngle));
+                                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) next[ny * GRID_SIZE + nx] = { ...p, x: nx, y: ny };
                                 }
                             }); return next;
                         }
@@ -627,9 +627,9 @@
                     const axis = Math.random() > 0.5 ? 'X' : 'Y'; const side = Math.random() > 0.5 ? 0 : 1;
                     return {
                         color: '#ec4899', desc: `무작위 축(${axis})을 기준으로 대칭 반사 시킵니다.`, logic: (c) => {
-                            const next = [...c];
-                            if (axis === 'X') { for (let y = 0; y < 48; y++) for (let x = 0; x < 24; x++) { const s = side ? c[y * 48 + (47 - x)] : c[y * 48 + x], tx = side ? x : 47 - x; next[y * 48 + tx] = { ...s, x: tx, y: y }; } }
-                            else { for (let x = 0; x < 48; x++) for (let y = 0; y < 24; y++) { const s = side ? c[(47 - y) * 48 + x] : c[y * 48 + x], ty = side ? y : 47 - y; next[ty * 48 + x] = { ...s, x: x, y: ty }; } }
+                            const next = [...c]; const half = GRID_SIZE / 2;
+                            if (axis === 'X') { for (let y = 0; y < GRID_SIZE; y++) for (let x = 0; x < half; x++) { const s = side ? c[y * GRID_SIZE + ((GRID_SIZE - 1) - x)] : c[y * GRID_SIZE + x], tx = side ? x : (GRID_SIZE - 1) - x; next[y * GRID_SIZE + tx] = { ...s, x: tx, y: y }; } }
+                            else { for (let x = 0; x < GRID_SIZE; x++) for (let y = 0; y < half; y++) { const s = side ? c[((GRID_SIZE - 1) - y) * GRID_SIZE + x] : c[y * GRID_SIZE + x], ty = side ? y : (GRID_SIZE - 1) - y; next[ty * GRID_SIZE + x] = { ...s, x: x, y: ty }; } }
                             return next;
                         }
                     };
@@ -637,12 +637,12 @@
             },
             {
                 name: 'QUADRANT SYNC', type: 'Spatial', icon: 'layout-grid', create: () => {
-                    const srcQ = Math.floor(Math.random() * 4);
+                    const srcQ = Math.floor(Math.random() * 4); const half = GRID_SIZE / 2;
                     return {
                         color: '#00f2ff', desc: `무작위 사분면(${srcQ + 1})을 전체 영역으로 패턴 복제합니다.`, logic: (c) => {
-                            const next = [...c]; const xO = (srcQ % 2) * 24, yO = Math.floor(srcQ / 2) * 24;
-                            for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) {
-                                const s = c[(y + yO) * 48 + (x + xO)]; for (let i = 0; i < 4; i++) { const tx = x + (i % 2) * 24, ty = y + Math.floor(i / 2) * 24; next[ty * 48 + tx] = { ...s, x: tx, y: ty }; }
+                            const next = [...c]; const xO = (srcQ % 2) * half, yO = Math.floor(srcQ / 2) * half;
+                            for (let y = 0; y < half; y++) for (let x = 0; x < half; x++) {
+                                const s = c[(y + yO) * GRID_SIZE + (x + xO)]; for (let i = 0; i < 4; i++) { const tx = x + (i % 2) * half, ty = y + Math.floor(i / 2) * half; next[ty * GRID_SIZE + tx] = { ...s, x: tx, y: ty }; }
                             } return next;
                         }
                     };
@@ -650,13 +650,13 @@
             },
             {
                 name: 'CIRCULAR CORE', type: 'Gen', icon: 'circle', create: () => {
-                    const col = getStudioColor(); const r = 6 + Math.random() * 14, cx = 10 + Math.random() * 28, cy = 10 + Math.random() * 28;
+                    const col = getStudioColor(); const r = 8 + Math.random() * 18, cx = 15 + Math.random() * 30, cy = 15 + Math.random() * 30;
                     return { color: col, desc: `반지름 ${r.toFixed(0)}의 원형 조형 데이터를 주입합니다.`, logic: (c) => c.map(x => (Math.sqrt((x.x - cx) ** 2 + (x.y - cy) ** 2) < r) ? { ...x, active: true, color: col } : x) };
                 }
             },
             {
                 name: 'TRIANGLE MESH', type: 'Gen', icon: 'triangle', create: () => {
-                    const col = getStudioColor(); const pts = Array.from({ length: 3 }, () => ({ x: Math.random() * 48, y: Math.random() * 48 }));
+                    const col = getStudioColor(); const pts = Array.from({ length: 3 }, () => ({ x: Math.random() * GRID_SIZE, y: Math.random() * GRID_SIZE }));
                     return {
                         color: col, desc: `세 점을 잇는 삼각형 폴리곤 영역을 채색합니다.`, logic: (c) => {
                             const area = 0.5 * (-pts[1].y * pts[2].x + pts[0].y * (-pts[1].x + pts[2].x) + pts[0].x * (pts[1].y - pts[2].y) + pts[1].x * pts[2].y);
@@ -674,10 +674,10 @@
                     return {
                         color: '#10b981', desc: `${d} 방향 가속도로 데이터를 쏠리게 유도합니다.`, logic: (c) => {
                             const next = c.map(x => ({ ...x, active: false }));
-                            if (d === 'DOWN') { for (let x = 0; x < 48; x++) { const acs = c.filter(p => p.x === x && p.active); acs.forEach((a, i) => { const ty = 47 - i; next[ty * 48 + x] = { ...a, y: ty, active: true }; }); } }
-                            else if (d === 'UP') { for (let x = 0; x < 48; x++) { const acs = c.filter(p => p.x === x && p.active); acs.forEach((a, i) => { const ty = i; next[ty * 48 + x] = { ...a, y: ty, active: true }; }); } }
-                            else if (d === 'RIGHT') { for (let y = 0; y < 48; y++) { const acs = c.filter(p => p.y === y && p.active); acs.forEach((a, i) => { const tx = 47 - i; next[y * 48 + tx] = { ...a, x: tx, active: true }; }); } }
-                            else { for (let y = 0; y < 48; y++) { const acs = c.filter(p => p.y === y && p.active); acs.forEach((a, i) => { const tx = i; next[y * 48 + tx] = { ...a, x: tx, active: true }; }); } }
+                            if (d === 'DOWN') { for (let x = 0; x < GRID_SIZE; x++) { const acs = c.filter(p => p.x === x && p.active); acs.forEach((a, i) => { const ty = (GRID_SIZE - 1) - i; next[ty * GRID_SIZE + x] = { ...a, y: ty, active: true }; }); } }
+                            else if (d === 'UP') { for (let x = 0; x < GRID_SIZE; x++) { const acs = c.filter(p => p.x === x && p.active); acs.forEach((a, i) => { const ty = i; next[ty * GRID_SIZE + x] = { ...a, y: ty, active: true }; }); } }
+                            else if (d === 'RIGHT') { for (let y = 0; y < GRID_SIZE; y++) { const acs = c.filter(p => p.y === y && p.active); acs.forEach((a, i) => { const tx = (GRID_SIZE - 1) - i; next[y * GRID_SIZE + tx] = { ...a, x: tx, active: true }; }); } }
+                            else { for (let y = 0; y < GRID_SIZE; y++) { const acs = c.filter(p => p.y === y && p.active); acs.forEach((a, i) => { const tx = i; next[y * GRID_SIZE + tx] = { ...a, x: tx, active: true }; }); } }
                             return next;
                         }
                     };
@@ -685,15 +685,15 @@
             },
             {
                 name: 'GRAVITY WELL', type: 'Gravity', icon: 'magnet', create: () => {
-                    const cx = Math.floor(10 + Math.random() * 28), cy = Math.floor(10 + Math.random() * 28), pull = Math.random() > 0.3;
+                    const cx = Math.floor(15 + Math.random() * 30), cy = Math.floor(15 + Math.random() * 30), pull = Math.random() > 0.3;
                     return {
-                        color: '#fb7185', desc: `임의의 중심점으로 데이터를 ${pull ? '당깁니다' : '밉니다'}.`, logic: (c) => {
+                        color: '#fb7185', desc: `임의의 중심점(${cx},${cy})으로 데이터를 ${pull ? '당깁니다' : '밉니다'}.`, logic: (c) => {
                             const next = c.map(x => ({ ...x, active: false }));
                             c.filter(p => p.active).forEach(p => {
                                 let nx = p.x, ny = p.y;
                                 if (pull) { if (nx < cx) nx++; else if (nx > cx) nx--; if (ny < cy) ny++; else if (ny > cy) ny--; }
                                 else { if (nx < cx) nx--; else if (nx > cx) nx++; if (ny < cy) ny--; else if (ny > cy) ny++; }
-                                nx = (nx + 48) % 48; ny = (ny + 48) % 48; next[ny * 48 + nx] = { ...p, x: nx, y: ny, active: true };
+                                nx = (nx + GRID_SIZE) % GRID_SIZE; ny = (ny + GRID_SIZE) % GRID_SIZE; next[ny * GRID_SIZE + nx] = { ...p, x: nx, y: ny, active: true };
                             }); return next;
                         }
                     };
@@ -702,7 +702,7 @@
             {
                 name: 'LIFE STEP', type: 'Life', icon: 'dna', create: () => ({
                     color: '#8b5cf6', desc: `생태계 진화 규칙을 적용하여 새로운 세대를 낳습니다.`, logic: (c) => c.map((x, i) => {
-                        let n = 0, colors = []; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (dx === 0 && dy === 0) continue; const nx = (x.x + dx + 48) % 48, ny = (x.y + dy + 48) % 48, nb = c[ny * 48 + nx]; if (nb.active) { n++; colors.push(nb.color); } }
+                        let n = 0, colors = []; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (dx === 0 && dy === 0) continue; const nx = (x.x + dx + GRID_SIZE) % GRID_SIZE, ny = (x.y + dy + GRID_SIZE) % GRID_SIZE, nb = c[ny * GRID_SIZE + nx]; if (nb.active) { n++; colors.push(nb.color); } }
                         const live = x.active ? (n === 2 || n === 3) : (n === 3);
                         let nCol = x.color; if (!x.active && live && colors.length > 0) nCol = colors[Math.floor(Math.random() * colors.length)];
                         return { ...x, active: live, color: nCol };
@@ -715,8 +715,8 @@
                         const next = [...c];
                         c.filter(p => p.active).forEach(p => {
                             if (Math.random() > 0.6) {
-                                const nx = (p.x + (Math.floor(Math.random() * 3) - 1) + 48) % 48, ny = (p.y + (Math.floor(Math.random() * 3) - 1) + 48) % 48;
-                                next[ny * 48 + nx] = { ...p, x: nx, y: ny, active: true };
+                                const nx = (p.x + (Math.floor(Math.random() * 3) - 1) + GRID_SIZE) % GRID_SIZE, ny = (p.y + (Math.floor(Math.random() * 3) - 1) + GRID_SIZE) % GRID_SIZE;
+                                next[ny * GRID_SIZE + nx] = { ...p, x: nx, y: ny, active: true };
                             }
                         });
                         return next;
@@ -725,14 +725,14 @@
             },
             {
                 name: 'GLITCH TEAR', type: 'Warp', icon: 'scissors', create: () => {
-                    const sY = Math.floor(Math.random() * 48), o = Math.floor(Math.random() * 12) - 6;
-                    return { color: '#ffffff', desc: `그리드 단면을 잘라 수평으로 오프셋 시킵니다.`, logic: (c) => c.map(x => (x.y > sY) ? { ...x, x: (x.x + o + 48) % 48 } : x) };
+                    const sY = Math.floor(Math.random() * GRID_SIZE), o = Math.floor(Math.random() * 14) - 7;
+                    return { color: '#ffffff', desc: `그리드 단면을 잘라 수평으로 오프셋 시킵니다.`, logic: (c) => c.map(x => (x.y > sY) ? { ...x, x: (x.x + o + GRID_SIZE) % GRID_SIZE } : x) };
                 }
             },
             {
                 name: 'LIQUID WAVE', type: 'Warp', icon: 'waves', create: () => {
-                    const a = 2 + Math.random() * 5;
-                    return { color: '#00f2ff', desc: `사인 파동 왜곡으로 유동적인 질감을 만듭니다.`, logic: (c) => c.map(x => ({ ...x, x: (x.x + Math.floor(Math.sin(x.y * 0.2) * a) + 48) % 48 })) };
+                    const a = 3 + Math.random() * 6;
+                    return { color: '#00f2ff', desc: `사인 파동 왜곡으로 유동적인 질감을 만듭니다.`, logic: (c) => c.map(x => ({ ...x, x: (x.x + Math.floor(Math.sin(x.y * 0.2) * a) + GRID_SIZE) % GRID_SIZE })) };
                 }
             },
             {
@@ -749,9 +749,9 @@
             }
         ];
 
-        function initGrid() { cells = []; for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) cells.push({ x, y, active: false, color: '#000' }); renderGrid(); }
+        function initGrid() { cells = []; for (let y = 0; y < GRID_SIZE; y++) for (let x = 0; x < GRID_SIZE; x++) cells.push({ x, y, active: false, color: '#000' }); renderGrid(); }
         function renderGrid() {
-            const el = document.getElementById('grid'); el.innerHTML = ''; el.style.gridTemplateColumns = `repeat(48, 1fr)`;
+            const el = document.getElementById('grid'); el.innerHTML = ''; el.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
             const s = Math.min(window.innerWidth * 0.92, 650); el.style.width = el.style.height = `${s}px`;
             const f = document.createDocumentFragment();
             cells.forEach(c => { const d = document.createElement('div'); d.className = 'pixel'; if (c.active) { d.style.backgroundColor = c.color; if (isBlendMode) d.style.opacity = "0.8"; } else d.style.backgroundColor = 'transparent'; f.appendChild(d); });
@@ -800,14 +800,14 @@
         }
 
         function exportImage(mode) {
-            const c = document.getElementById('export-canvas'), ctx = c.getContext('2d'), pS = 10, w = 48 * pS, h = 48 * pS;
+            const c = document.getElementById('export-canvas'), ctx = c.getContext('2d'), pS = 10, w = GRID_SIZE * pS, h = GRID_SIZE * pS;
             if (mode === 'single') { c.width = w; c.height = h; drawM(ctx, cells, 0, 0, pS, 0); }
             else {
                 c.width = w * 2; c.height = h * 2; if (mode === 'repeat') [0, w].forEach(dx => [0, h].forEach(dy => drawM(ctx, cells, dx, dy, pS, 0))); else { drawM(ctx, cells, 0, 0, pS, 0); drawM(ctx, cells, w * 2, 0, pS, 90); drawM(ctx, cells, 0, h * 2, pS, 270); drawM(ctx, cells, w * 2, h * 2, pS, 180); }
             }
-            const l = document.createElement('a'); l.download = `Alchemy_${mode}_${Date.now()}.png`; l.href = c.toDataURL('image/png'); l.click();
+            const l = document.createElement('a'); l.download = `Alchemy60_${mode}_${Date.now()}.png`; l.href = c.toDataURL('image/png'); l.click();
         }
-        function drawM(ctx, d, ox, oy, ps, rot) { ctx.save(); ctx.translate(ox, oy); if (rot !== 0) ctx.rotate((rot * Math.PI) / 180); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 48 * ps, 48 * ps); d.forEach(c => { if (c.active) { ctx.fillStyle = c.color; if (isBlendMode) ctx.globalAlpha = 0.8; ctx.fillRect(c.x * ps, c.y * ps, ps, ps); ctx.globalAlpha = 1.0; } }); ctx.restore(); }
+        function drawM(ctx, d, ox, oy, ps, rot) { ctx.save(); ctx.translate(ox, oy); if (rot !== 0) ctx.rotate((rot * Math.PI) / 180); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, GRID_SIZE * ps, GRID_SIZE * ps); d.forEach(c => { if (c.active) { ctx.fillStyle = c.color; if (isBlendMode) ctx.globalAlpha = 0.8; ctx.fillRect(c.x * ps, c.y * ps, ps, ps); ctx.globalAlpha = 1.0; } }); ctx.restore(); }
 
         window.addEventListener('resize', renderGrid);
         window.onload = () => { initColorSliders(); updatePoolUI(); lucide.createIcons(); };
