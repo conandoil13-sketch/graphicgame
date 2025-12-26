@@ -204,7 +204,6 @@
                 Configure Studio</h1>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-stretch">
-                <!-- Left: Controls -->
                 <div class="lg:col-span-7 glass p-8 space-y-8 flex flex-col justify-center">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                         <div class="space-y-6">
@@ -261,7 +260,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Right: Palette Management -->
                 <div class="lg:col-span-5 glass p-8 flex flex-col">
                     <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
                         <h3 class="text-xs font-bold text-white uppercase tracking-widest">Components</h3>
@@ -269,7 +267,6 @@
                     </div>
                     <div id="selected-pool" class="grid grid-cols-5 gap-3 mb-8 min-h-[100px]"></div>
 
-                    <!-- GAME MODE TOGGLE -->
                     <div class="bg-white/5 p-4 border border-white/5 rounded-sm mb-6 flex items-center justify-between">
                         <div class="space-y-1">
                             <h4 class="text-[10px] font-black text-white uppercase tracking-widest">Challenge Mode</h4>
@@ -291,11 +288,11 @@
                         </div>
                         <div class="space-y-3 pt-6 border-t border-white/10">
                             <button id="start-btn" onclick="startStudio(false)" disabled
-                                class="w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed">Launch
-                                Art Studio</button>
+                                class="w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed">Collect
+                                Colors</button>
                             <button onclick="startStudio(true)"
                                 class="w-full py-3 text-[9px] text-white/30 hover:text-white transition-all uppercase tracking-[0.4em] font-bold">All
-                                Random Mode</button>
+                                Random Spectrum Mode</button>
                         </div>
                     </div>
                 </div>
@@ -312,13 +309,13 @@
                 <div class="flex items-center justify-center lg:justify-start gap-2 text-cyan-400 mb-2">
                     <i data-lucide="zap" class="w-4 h-4 animate-pulse"></i>
                     <span id="mode-label"
-                        class="text-[10px] font-bold tracking-[0.6em] uppercase">Computational.Art.Studio.Final</span>
+                        class="text-[10px] font-bold tracking-[0.6em] uppercase">Computational.Art.Studio.v13</span>
                 </div>
                 <h1 class="text-5xl md:text-7xl font-black italic tracking-tighter text-white uppercase leading-none">
                     Grid Alchemist</h1>
                 <p id="palette-indicator"
-                    class="text-[11px] text-slate-500 mt-4 font-bold tracking-[0.2em] uppercase italic">>>>
-                    High-Resolution Artistic Engine Active</p>
+                    class="text-[11px] text-slate-500 mt-4 font-bold tracking-[0.2em] uppercase italic">>>> Neural
+                    Engine Optimized</p>
             </div>
             <div class="flex flex-wrap justify-center gap-3">
                 <button id="blend-toggle" onclick="toggleBlendMode()"
@@ -368,7 +365,7 @@
                         </p>
                         <button onclick="exportImage('radial')"
                             class="px-10 py-4 bg-cyan-600 text-black text-xs font-black uppercase tracking-[0.5em] hover:bg-white transition-all">Export
-                            Result</button>
+                            Artwork</button>
                     </div>
                 </div>
             </div>
@@ -390,7 +387,7 @@
                     <div class="absolute top-0 left-0 w-full h-1 bg-cyan-500/20"></div>
                     <h2
                         class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <i data-lucide="terminal" class="w-4 h-4"></i> Session_Stream.log</h2>
+                        <i data-lucide="terminal" class="w-4 h-4"></i> Protocol_Stream.log</h2>
                     <div id="history-log"
                         class="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-2 font-mono text-[10px]">
                         <div class="text-slate-800 italic uppercase">Initializing Workspace...</div>
@@ -399,7 +396,7 @@
 
                 <div class="space-y-4">
                     <div class="flex justify-between items-center border-b border-white/5 pb-3">
-                        <h2 class="text-[10px] font-black text-white uppercase tracking-[0.4em]">Protocol Hand</h2>
+                        <h2 class="text-[10px] font-black text-white uppercase tracking-[0.4em]">Design Protocol</h2>
                         <button id="reroll-btn" onclick="rerollHand()"
                             class="flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-bold text-cyan-400 hover:text-white transition-colors border border-cyan-400/30 hover:bg-cyan-400/20 rounded-sm disabled:opacity-30 disabled:cursor-not-allowed">
                             <i data-lucide="refresh-ccw" class="w-3 h-3"></i> Reroll Hand
@@ -429,7 +426,6 @@
         let allRandomMode = false;
         let currentSelectedColor = "#00f2ff";
 
-        // GAME MODE VARIABLES
         let isChallengeMode = false;
         let remainingTurns = 20;
         let remainingRerolls = 2;
@@ -440,7 +436,6 @@
             MONO: ['#FFFFFF', '#F1F5F9', '#CBD5E1', '#94A3B8', '#64748B', '#475569', '#334155', '#1E293B', '#0F172A', '#020617']
         };
 
-        // --- SETUP LOGIC ---
         function hsvToRgb(h, s, v) {
             h /= 360; s /= 100; v /= 100;
             let r, g, b, i = Math.floor(h * 6), f = h * 6 - i, p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
@@ -500,7 +495,6 @@
             initGrid(); rerollHand(); lucide.createIcons();
         }
 
-        // --- ART ENGINE LOGIC ---
         function getStudioColor() { return allRandomMode ? `hsl(${Math.floor(Math.random() * 360)}, 75%, 60%)` : colorPool[Math.floor(Math.random() * colorPool.length)]; }
         function mixColors(c1, c2) {
             if (!c1 || c1 === '#000' || c1 === 'rgb(0, 0, 0)') return c2;
@@ -511,7 +505,7 @@
         function toggleBlendMode() { isBlendMode = !isBlendMode; document.getElementById('blend-status').innerText = isBlendMode ? 'ON' : 'OFF'; document.getElementById('blend-toggle').classList.toggle('btn-active'); renderGrid(); }
 
         const CARD_TEMPLATES = [
-            // --- 핵심 로직 (복구 확인) ---
+            // --- 핵심 로직 복구 ---
             {
                 name: 'STEP SAMPLER', type: 'Logic', icon: 'hash', create: () => {
                     const col = getStudioColor(); const n = Math.floor(Math.random() * 8) + 4;
@@ -531,26 +525,85 @@
                 }
             },
 
-            // --- NEW: 신규 로직 추가 ---
+            // --- 무작위성 추가 ---
             {
                 name: 'STOCHASTIC NOISE', type: 'Gen', icon: 'sparkles', create: () => {
                     const col = getStudioColor(); const density = 0.05 + Math.random() * 0.15;
-                    return { color: col, desc: `${(density * 100).toFixed(0)}% 확률로 그리드 전역에 픽셀 노이즈를 살포합니다.`, logic: (c) => c.map(x => Math.random() < density ? { ...x, active: true, color: col } : x) };
+                    return { color: col, desc: `${(density * 100).toFixed(0)}% 확률로 픽셀 노이즈를 살포합니다.`, logic: (c) => c.map(x => Math.random() < density ? { ...x, active: true, color: col } : x) };
                 }
             },
             {
                 name: 'PALETTE SWAP', type: 'Data', icon: 'shuffle', create: () => ({
-                    color: '#fff', desc: `현재 그려진 모든 픽셀의 색상을 팔레트 내 다른 색으로 무작위 교체합니다.`, logic: (c) => {
+                    color: '#fff', desc: `픽셀들의 색상을 팔레트 내 다른 색으로 무작위 교체합니다.`, logic: (c) => {
                         if (allRandomMode || colorPool.length < 2) return c.map(x => x.active ? { ...x, color: getStudioColor() } : x);
-                        const map = new Map();
-                        const shuffled = [...colorPool].sort(() => Math.random() - 0.5);
+                        const map = new Map(); const shuffled = [...colorPool].sort(() => Math.random() - 0.5);
                         colorPool.forEach((col, i) => map.set(col, shuffled[i]));
                         return c.map(x => x.active ? { ...x, color: map.get(x.color) || x.color } : x);
                     }
                 })
             },
 
-            // --- 기존 고급 로직 유지 ---
+            // --- 대칭 및 만화경 업그레이드 ---
+            {
+                name: 'ANGULAR SYM', type: 'Spatial', icon: 'refresh-ccw', create: () => ({
+                    color: '#fbbf24', desc: `중심 기반 4방향 회전 대칭 조형을 완성합니다.`, logic: (c) => {
+                        const next = [...c]; for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) {
+                            const s = c[y * 48 + x]; if (!s.active) continue;
+                            [[47 - x, y], [x, 47 - y], [47 - x, 47 - y]].forEach(([sx, sy]) => { next[sy * 48 + sx] = { ...s, x: sx, y: sy, active: true }; });
+                        } return next;
+                    }
+                })
+            },
+            {
+                name: 'KALEIDOSCOPE N', type: 'Spatial', icon: 'snowflake', create: () => {
+                    const n = [6, 8, 12, 16][Math.floor(Math.random() * 4)];
+                    return {
+                        color: '#fbbf24', desc: `${n}분할 무작위 만화경 대칭으로 기하학적 미학을 극대화합니다.`, logic: (c) => {
+                            const next = [...c]; const centerX = 23.5, centerY = 23.5;
+                            const angleStep = (Math.PI * 2) / n;
+                            c.forEach(p => {
+                                if (!p.active) return;
+                                const dx = p.x - centerX, dy = p.y - centerY;
+                                const r = Math.sqrt(dx * dx + dy * dy);
+                                const startAngle = Math.atan2(dy, dx);
+                                for (let i = 1; i < n; i++) {
+                                    const curAngle = startAngle + i * angleStep;
+                                    const nx = Math.round(centerX + r * Math.cos(curAngle)), ny = Math.round(centerY + r * Math.sin(curAngle));
+                                    if (nx >= 0 && nx < 48 && ny >= 0 && ny < 48) next[ny * 48 + nx] = { ...p, x: nx, y: ny };
+                                }
+                            }); return next;
+                        }
+                    };
+                }
+            },
+            {
+                name: 'RANDOM MIRROR', type: 'Spatial', icon: 'combine', create: () => {
+                    const axis = Math.random() > 0.5 ? 'X' : 'Y'; const side = Math.random() > 0.5 ? 0 : 1;
+                    return {
+                        color: '#ec4899', desc: `무작위 축(${axis})을 기준으로 대칭 반사 시킵니다.`, logic: (c) => {
+                            const next = [...c];
+                            if (axis === 'X') { for (let y = 0; y < 48; y++) for (let x = 0; x < 24; x++) { const s = side ? c[y * 48 + (47 - x)] : c[y * 48 + x], tx = side ? x : 47 - x; next[y * 48 + tx] = { ...s, x: tx, y: y }; } }
+                            else { for (let x = 0; x < 48; x++) for (let y = 0; y < 24; y++) { const s = side ? c[(47 - y) * 48 + x] : c[y * 48 + x], ty = side ? y : 47 - y; next[ty * 48 + x] = { ...s, x: x, y: ty }; } }
+                            return next;
+                        }
+                    };
+                }
+            },
+            {
+                name: 'QUADRANT SYNC', type: 'Spatial', icon: 'layout-grid', create: () => {
+                    const srcQ = Math.floor(Math.random() * 4);
+                    return {
+                        color: '#00f2ff', desc: `무작위 사분면(${srcQ + 1})을 전체 영역으로 패턴 복제합니다.`, logic: (c) => {
+                            const next = [...c]; const xO = (srcQ % 2) * 24, yO = Math.floor(srcQ / 2) * 24;
+                            for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) {
+                                const s = c[(y + yO) * 48 + (x + xO)]; for (let i = 0; i < 4; i++) { const tx = x + (i % 2) * 24, ty = y + Math.floor(i / 2) * 24; next[ty * 48 + tx] = { ...s, x: tx, y: ty }; }
+                            } return next;
+                        }
+                    };
+                }
+            },
+
+            // --- 물리 및 왜곡 로직 유지 ---
             {
                 name: 'CIRCULAR CORE', type: 'Gen', icon: 'circle', create: () => {
                     const col = getStudioColor(); const r = 6 + Math.random() * 14, cx = 10 + Math.random() * 28, cy = 10 + Math.random() * 28;
@@ -572,26 +625,6 @@
                 }
             },
             {
-                name: 'ANGULAR SYM', type: 'Spatial', icon: 'refresh-ccw', create: () => ({
-                    color: '#fbbf24', desc: `중심 기반 4방향 회전 대칭 조형을 완성합니다.`, logic: (c) => {
-                        const next = [...c]; for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) {
-                            const s = c[y * 48 + x]; if (!s.active) continue;
-                            [[47 - x, y], [x, 47 - y], [47 - x, 47 - y]].forEach(([sx, sy]) => { next[sy * 48 + sx] = { ...s, x: sx, y: sy, active: true }; });
-                        } return next;
-                    }
-                })
-            },
-            {
-                name: 'KALEIDOSCOPE 8', type: 'Spatial', icon: 'snowflake', create: () => ({
-                    color: '#fbbf24', desc: `8분할 만화경 대칭으로 기하학적 미학을 극대화합니다.`, logic: (c) => {
-                        const next = [...c]; for (let y = 0; y < 24; y++) for (let x = 0; x <= y; x++) {
-                            const s = c[y * 48 + x]; const syms = [[x, y], [y, x], [47 - x, y], [47 - y, x], [x, 47 - y], [y, 47 - x], [47 - x, 47 - y], [47 - y, 47 - x]];
-                            syms.forEach(([sx, sy]) => { next[sy * 48 + sx] = { ...s, x: sx, y: sy }; });
-                        } return next;
-                    }
-                })
-            },
-            {
                 name: 'VECTOR DRIFT', type: 'Gravity', icon: 'wind', create: () => {
                     const d = ['UP', 'DOWN', 'LEFT', 'RIGHT'][Math.floor(Math.random() * 4)];
                     return {
@@ -610,7 +643,7 @@
                 name: 'GRAVITY WELL', type: 'Gravity', icon: 'magnet', create: () => {
                     const cx = Math.floor(10 + Math.random() * 28), cy = Math.floor(10 + Math.random() * 28), pull = Math.random() > 0.3;
                     return {
-                        color: '#fb7185', desc: `특정 지점(${cx},${cy})으로 데이터를 ${pull ? '당깁니다' : '밉니다'}.`, logic: (c) => {
+                        color: '#fb7185', desc: `임의의 중심점으로 데이터를 ${pull ? '당깁니다' : '밉니다'}.`, logic: (c) => {
                             const next = c.map(x => ({ ...x, active: false }));
                             c.filter(p => p.active).forEach(p => {
                                 let nx = p.x, ny = p.y;
@@ -634,7 +667,7 @@
             },
             {
                 name: 'DIFFUSION', type: 'Warp', icon: 'expand', create: () => ({
-                    color: '#a78bfa', desc: `활성 픽셀이 주변으로 유기적으로 번져나갑니다.`, logic: (c) => {
+                    color: '#a78bfa', desc: `활성 픽셀이 인접한 공간으로 유기적으로 번져나갑니다.`, logic: (c) => {
                         const next = [...c];
                         c.filter(p => p.active).forEach(p => {
                             if (Math.random() > 0.6) {
@@ -642,6 +675,30 @@
                                 next[ny * 48 + nx] = { ...p, x: nx, y: ny, active: true };
                             }
                         });
+                        return next;
+                    }
+                })
+            },
+            {
+                name: 'GLITCH TEAR', type: 'Warp', icon: 'scissors', create: () => {
+                    const sY = Math.floor(Math.random() * 48), o = Math.floor(Math.random() * 12) - 6;
+                    return { color: '#ffffff', desc: `그리드 단면을 잘라 수평으로 오프셋 시킵니다.`, logic: (c) => c.map(x => (x.y > sY) ? { ...x, x: (x.x + o + 48) % 48 } : x) };
+                }
+            },
+            {
+                name: 'LIQUID WAVE', type: 'Warp', icon: 'waves', create: () => {
+                    const a = 2 + Math.random() * 5;
+                    return { color: '#00f2ff', desc: `사인 파동 왜곡으로 유동적인 질감을 만듭니다.`, logic: (c) => c.map(x => ({ ...x, x: (x.x + Math.floor(Math.sin(x.y * 0.2) * a) + 48) % 48 })) };
+                }
+            },
+            {
+                name: 'LUMA SORT', type: 'Data', icon: 'list-ordered', create: () => ({
+                    color: '#f8fafc', desc: `명도 데이터 순으로 물리 정렬을 수행합니다.`, logic: (c) => {
+                        const actives = c.filter(x => x.active).sort((a, b) => {
+                            const getL = (col) => { const dc = document.createElement('canvas').getContext('2d'); dc.fillStyle = col; const m = dc.fillStyle.match(/\d+/g); return m ? (m[0] * 0.3 + m[1] * 0.59 + m[2] * 0.11) : 0; };
+                            return getL(b.color) - getL(a.color);
+                        });
+                        const next = c.map(x => ({ ...x, active: false })); actives.forEach((ac, i) => { if (i < TOTAL) next[i] = { ...next[i], active: true, color: ac.color }; });
                         return next;
                     }
                 })
@@ -692,7 +749,7 @@
             if (isChallengeMode) { remainingTurns--; remainingRerolls = 2; }
             const l = document.getElementById('history-log'); if (l.querySelector('div.italic')) l.innerHTML = '';
             const e = document.createElement('div'); e.className = 'flex items-center gap-3 border-b border-white/5 pb-2 animate-in';
-            e.innerHTML = `<span class="text-slate-700">[${turnCount}]</span> <span style="color: ${card.color}">${card.name}</span> <span class="ml-auto text-slate-600">EXEC</span>`; l.prepend(e);
+            e.innerHTML = `<span class="text-slate-700">[${turnCount}]</span> <span style="color: ${card.color}">${card.name}</span> <span class="ml-auto text-slate-600">DONE</span>`; l.prepend(e);
             document.getElementById('cycle-count').innerText = `CYC: ${turnCount.toString().padStart(3, '0')}`;
             updateGameStats(); renderGrid(); if (remainingTurns > 0 || !isChallengeMode) rerollHand();
             o.classList.add('opacity-0', 'pointer-events-none'); w.classList.remove('compiling-active');
