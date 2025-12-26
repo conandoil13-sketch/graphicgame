@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grid Alchemist: The Complete Studio</title>
+    <title>Grid Alchemist: The Ultimate Artistic Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -142,6 +142,52 @@
             margin-bottom: 4px;
             color: #64748b;
         }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-switch {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider-switch:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider-switch {
+            background-color: var(--accent-color);
+        }
+
+        input:checked+.slider-switch:before {
+            transform: translateX(26px);
+            background-color: black;
+        }
     </style>
 </head>
 
@@ -155,7 +201,7 @@
                 <span class="text-xs font-bold tracking-[0.5em] uppercase">Visual DNA Initialization</span>
             </div>
             <h1 class="text-5xl md:text-7xl font-black italic tracking-tighter text-white uppercase text-center mb-10">
-                Define Color Space</h1>
+                Configure Studio</h1>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-stretch">
                 <!-- Left: Controls -->
@@ -205,8 +251,8 @@
                             class="w-20 h-20 rounded shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-white/10 shrink-0"
                             style="background-color: #00f2ff;"></div>
                         <div class="flex-1">
-                            <div class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Current
-                                Variable</div>
+                            <div class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Preview
+                            </div>
                             <div id="hex-display" class="text-xl font-black text-white tracking-tight uppercase mb-3">
                                 #00f2ff</div>
                             <button onclick="addColorFromSliders()"
@@ -215,29 +261,41 @@
                         </div>
                     </div>
                 </div>
-                <!-- Right: Palette -->
+                <!-- Right: Palette Management -->
                 <div class="lg:col-span-5 glass p-8 flex flex-col">
                     <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
                         <h3 class="text-xs font-bold text-white uppercase tracking-widest">Components</h3>
                         <span id="pool-count" class="text-cyan-400 font-black">0/10</span>
                     </div>
                     <div id="selected-pool" class="grid grid-cols-5 gap-3 mb-8 min-h-[100px]"></div>
+
+                    <!-- GAME MODE TOGGLE -->
+                    <div class="bg-white/5 p-4 border border-white/5 rounded-sm mb-6 flex items-center justify-between">
+                        <div class="space-y-1">
+                            <h4 class="text-[10px] font-black text-white uppercase tracking-widest">Challenge Mode</h4>
+                            <p class="text-[8px] text-slate-500 leading-tight">20 turns limit / 2 rerolls per choice.
+                            </p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="game-mode-toggle">
+                            <span class="slider-switch"></span>
+                        </label>
+                    </div>
+
                     <div class="space-y-6 mt-auto">
                         <div class="flex gap-2">
                             <button onclick="applyPreset('BAUHAUS')"
                                 class="flex-1 py-2 border border-white/5 hover:border-white/20 transition-all text-[8px] font-bold uppercase bg-white/5">Bauhaus</button>
                             <button onclick="applyPreset('CYBER')"
                                 class="flex-1 py-2 border border-white/5 hover:border-white/30 transition-all text-[8px] font-bold uppercase bg-white/5">Cyber</button>
-                            <button onclick="applyPreset('MONO')"
-                                class="flex-1 py-2 border border-white/5 hover:border-white/30 transition-all text-[8px] font-bold uppercase bg-white/5">Mono</button>
                         </div>
                         <div class="space-y-3 pt-6 border-t border-white/10">
                             <button id="start-btn" onclick="startStudio(false)" disabled
-                                class="w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed transition-all">Launch
-                                with 0 Colors</button>
+                                class="w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed">Launch
+                                Art Studio</button>
                             <button onclick="startStudio(true)"
                                 class="w-full py-3 text-[9px] text-white/30 hover:text-white transition-all uppercase tracking-[0.4em] font-bold">All
-                                Random Spectrum Mode</button>
+                                Random Mode</button>
                         </div>
                     </div>
                 </div>
@@ -253,7 +311,8 @@
             <div class="text-center lg:text-left">
                 <div class="flex items-center justify-center lg:justify-start gap-2 text-cyan-400 mb-2">
                     <i data-lucide="zap" class="w-4 h-4 animate-pulse"></i>
-                    <span class="text-[10px] font-bold tracking-[0.6em] uppercase">Computational.Art.Studio.Final</span>
+                    <span id="mode-label"
+                        class="text-[10px] font-bold tracking-[0.6em] uppercase">Computational.Art.Studio.Final</span>
                 </div>
                 <h1 class="text-5xl md:text-7xl font-black italic tracking-tighter text-white uppercase leading-none">
                     Grid Alchemist</h1>
@@ -285,7 +344,7 @@
                     </div>
                 </div>
                 <button onclick="window.location.reload()"
-                    class="px-6 py-3 border border-red-500/30 text-red-500 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-red-500 hover:text-white transition-all glass text-center">Reset
+                    class="px-6 py-3 border border-red-500/30 text-red-500 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-red-500 hover:text-white transition-all glass">Reset
                     Lab</button>
             </div>
         </header>
@@ -300,10 +359,33 @@
                         <i data-lucide="refresh-cw" class="w-12 h-12 text-white animate-spin mb-4"></i>
                         <span class="text-white text-[10px] font-black tracking-[1em]">RENDERING</span>
                     </div>
+                    <div id="finish-overlay"
+                        class="absolute inset-0 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center z-[60] opacity-0 pointer-events-none transition-all duration-1000">
+                        <i data-lucide="trophy" class="w-16 h-16 text-amber-500 mb-6"></i>
+                        <h2 class="text-3xl font-black text-white uppercase tracking-[0.3em] mb-2 text-center">Creation
+                            Finalized</h2>
+                        <p class="text-xs text-slate-500 uppercase tracking-widest mb-10">Challenge Mode Accomplished.
+                        </p>
+                        <button onclick="exportImage('radial')"
+                            class="px-10 py-4 bg-cyan-600 text-black text-xs font-black uppercase tracking-[0.5em] hover:bg-white transition-all">Export
+                            Result</button>
+                    </div>
                 </div>
             </div>
 
             <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-8 w-full">
+                <div id="game-stats" class="grid grid-cols-2 gap-4 hidden">
+                    <div class="glass p-5 flex flex-col items-center">
+                        <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Turns
+                            Left</span>
+                        <span id="turn-stat" class="text-3xl font-black text-white">20</span>
+                    </div>
+                    <div class="glass p-5 flex flex-col items-center">
+                        <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Rerolls</span>
+                        <span id="reroll-stat" class="text-3xl font-black text-cyan-400">2</span>
+                    </div>
+                </div>
+
                 <div class="glass p-6 h-[200px] flex flex-col relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-1 bg-cyan-500/20"></div>
                     <h2
@@ -318,14 +400,14 @@
                 <div class="space-y-4">
                     <div class="flex justify-between items-center border-b border-white/5 pb-3">
                         <h2 class="text-[10px] font-black text-white uppercase tracking-[0.4em]">Protocol Hand</h2>
-                        <button onclick="rerollHand()"
-                            class="flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-bold text-cyan-400 hover:text-white transition-colors border border-cyan-400/30 hover:bg-cyan-400/20 rounded-sm">
+                        <button id="reroll-btn" onclick="rerollHand()"
+                            class="flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-bold text-cyan-400 hover:text-white transition-colors border border-cyan-400/30 hover:bg-cyan-400/20 rounded-sm disabled:opacity-30 disabled:cursor-not-allowed">
                             <i data-lucide="refresh-ccw" class="w-3 h-3"></i> Reroll Hand
                         </button>
                     </div>
                     <div id="hand" class="flex flex-col gap-3"></div>
                     <div class="flex justify-between items-center px-1">
-                        <div id="current-palette-display" class="flex gap-1"></div>
+                        <div id="current-palette-display" class="flex gap-1 overflow-hidden"></div>
                         <span id="cycle-count" class="text-[9px] text-cyan-900 font-bold tracking-tighter shrink-0">CYC:
                             000</span>
                     </div>
@@ -341,11 +423,16 @@
         const TOTAL = GRID_SIZE * GRID_SIZE;
         const MID = GRID_SIZE / 2;
         let cells = [];
-        let turn = 0;
+        let turnCount = 0;
         let isBlendMode = false;
         let colorPool = [];
         let allRandomMode = false;
         let currentSelectedColor = "#00f2ff";
+
+        // GAME MODE VARIABLES
+        let isChallengeMode = false;
+        let remainingTurns = 20;
+        let remainingRerolls = 2;
 
         const PRESETS = {
             BAUHAUS: ['#E63946', '#F1FAEE', '#A8DADC', '#457B9D', '#1D3557', '#FFD166', '#06D6A0', '#118AB2', '#073B4C', '#FFFFFF'],
@@ -353,7 +440,7 @@
             MONO: ['#FFFFFF', '#F1F5F9', '#CBD5E1', '#94A3B8', '#64748B', '#475569', '#334155', '#1E293B', '#0F172A', '#020617']
         };
 
-        // --- COLOR CONVERSIONS ---
+        // --- SETUP LOGIC ---
         function hsvToRgb(h, s, v) {
             h /= 360; s /= 100; v /= 100;
             let r, g, b, i = Math.floor(h * 6), f = h * 6 - i, p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
@@ -400,35 +487,20 @@
             }
             document.getElementById('pool-count').innerText = `${colorPool.length}/10`;
             const btn = document.getElementById('start-btn');
-            // --- MODIFIED: ALLOW STARTING WITH ANY COLOR COUNT > 0 ---
-            if (colorPool.length > 0) {
-                btn.disabled = false;
-                btn.className = 'w-full py-5 bg-cyan-500 text-black text-xs font-black uppercase tracking-[0.3em] hover:bg-white transition-all shadow-xl';
-                btn.innerText = `Launch with ${colorPool.length} Color${colorPool.length > 1 ? 's' : ''}`;
-            } else {
-                btn.disabled = true;
-                btn.className = 'w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed';
-                btn.innerText = 'Select at least 1 Color';
-            }
+            if (colorPool.length > 0) { btn.disabled = false; btn.className = 'w-full py-5 bg-cyan-500 text-black text-xs font-black uppercase tracking-[0.3em] hover:bg-white transition-all shadow-xl'; btn.innerText = `Launch with ${colorPool.length} Colors`; }
+            else { btn.disabled = true; btn.className = 'w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed'; btn.innerText = 'Select Colors'; }
         }
 
         function startStudio(allR) {
-            allRandomMode = allR; document.getElementById('setup-screen').classList.add('setup-hidden'); document.getElementById('app').classList.remove('opacity-0');
+            allRandomMode = allR; isChallengeMode = document.getElementById('game-mode-toggle').checked;
+            document.getElementById('setup-screen').classList.add('setup-hidden'); document.getElementById('app').classList.remove('opacity-0');
+            if (isChallengeMode) { document.getElementById('game-stats').classList.remove('hidden'); document.getElementById('mode-label').innerText = "Challenge.Mode.Active"; }
             const cp = document.getElementById('current-palette-display'); cp.innerHTML = '';
             if (!allRandomMode) colorPool.forEach(c => { const d = document.createElement('div'); d.className = 'w-2 h-2 rounded-full'; d.style.backgroundColor = c; cp.appendChild(d); });
-            else cp.innerText = 'RAND_MODE';
             initGrid(); rerollHand(); lucide.createIcons();
         }
 
-        // --- UTILS ---
-        function colorDist(c1, c2) {
-            const d = document.createElement('canvas').getContext('2d');
-            d.fillStyle = c1; const r1 = d.fillStyle.match(/\d+/g).map(Number);
-            d.fillStyle = c2; const r2 = d.fillStyle.match(/\d+/g).map(Number);
-            return Math.sqrt((r1[0] - r2[0]) ** 2 + (r1[1] - r2[1]) ** 2 + (r1[2] - r2[2]) ** 2);
-        }
-
-        // --- CORE ART ENGINE ---
+        // --- ART ENGINE LOGIC ---
         function getStudioColor() { return allRandomMode ? `hsl(${Math.floor(Math.random() * 360)}, 75%, 60%)` : colorPool[Math.floor(Math.random() * colorPool.length)]; }
         function mixColors(c1, c2) {
             if (!c1 || c1 === '#000' || c1 === 'rgb(0, 0, 0)') return c2;
@@ -439,57 +511,60 @@
         function toggleBlendMode() { isBlendMode = !isBlendMode; document.getElementById('blend-status').innerText = isBlendMode ? 'ON' : 'OFF'; document.getElementById('blend-toggle').classList.toggle('btn-active'); renderGrid(); }
 
         const CARD_TEMPLATES = [
-            // --- LOGIC / COMPUTATION ---
+            // --- 핵심 로직 (복구 확인) ---
             {
                 name: 'STEP SAMPLER', type: 'Logic', icon: 'hash', create: () => {
                     const col = getStudioColor(); const n = Math.floor(Math.random() * 8) + 4;
-                    return { color: col, desc: `그리드의 ${n}번째 데이터 슬롯마다 픽셀을 배치합니다.`, logic: (c) => c.map((x, i) => i % n === 0 ? { ...x, active: true, color: col } : x) };
+                    return { color: col, desc: `${n}번째 데이터 슬롯마다 정밀하게 픽셀을 배치합니다.`, logic: (c) => c.map((x, i) => i % n === 0 ? { ...x, active: true, color: col } : x) };
                 }
             },
             {
                 name: 'MODULO MESH', type: 'Logic', icon: 'grid', create: () => {
                     const col = getStudioColor(); const m = Math.floor(Math.random() * 5) + 4;
-                    return { color: col, desc: `${m}픽셀 간격의 나머지 연산 격자망을 생성합니다.`, logic: (c) => c.map(x => (x.x % m === 0 || x.y % m === 0) ? { ...x, active: true, color: col } : x) };
+                    return { color: col, desc: `${m}픽셀 주기로 기하학적 격자망을 형성합니다.`, logic: (c) => c.map(x => (x.x % m === 0 || x.y % m === 0) ? { ...x, active: true, color: col } : x) };
                 }
             },
             {
-                name: 'BITWISE XOR', type: 'Logic', icon: 'binary', create: () => {
-                    const col = getStudioColor(); const mask = Math.pow(2, Math.floor(Math.random() * 4) + 1);
-                    return { color: col, desc: `(x ^ y & ${mask}) 비트 연산으로 디지털 조형을 출력합니다.`, logic: (c) => c.map(x => ((x.x ^ x.y) & mask) ? { ...x, active: true, color: col } : x) };
+                name: 'CONCENTRIC RINGS', type: 'Gen', icon: 'target', create: () => {
+                    const col = getStudioColor(); const gap = 3 + Math.random() * 5;
+                    return { color: col, desc: `${gap.toFixed(0)}픽셀 주기의 동심원 패턴을 중첩합니다.`, logic: (c) => c.map(x => (Math.floor(Math.sqrt((x.x - 23.5) ** 2 + (x.y - 23.5) ** 2)) % Math.floor(gap) === 0) ? { ...x, active: true, color: col } : x) };
                 }
             },
 
-            // --- PALETTE QUANTIZE (Fixed for dynamic pool size) ---
+            // --- NEW: 신규 로직 추가 ---
             {
-                name: 'PALETTE SYNC', type: 'Data', icon: 'droplets', create: () => ({
-                    color: '#fff', desc: `캔버스의 모든 색을 고정된 팔레트 내에서 가장 가까운 색으로 정렬합니다.`, logic: (c) => {
-                        if (allRandomMode || colorPool.length === 0) return c;
-                        const subPal = colorPool.slice(0, Math.min(3, colorPool.length));
-                        return c.map(p => {
-                            if (!p.active) return p;
-                            let best = subPal[0], min = Infinity;
-                            subPal.forEach(target => { const d = colorDist(p.color, target); if (d < min) { min = d; best = target; } });
-                            return { ...p, color: best };
-                        });
+                name: 'STOCHASTIC NOISE', type: 'Gen', icon: 'sparkles', create: () => {
+                    const col = getStudioColor(); const density = 0.05 + Math.random() * 0.15;
+                    return { color: col, desc: `${(density * 100).toFixed(0)}% 확률로 그리드 전역에 픽셀 노이즈를 살포합니다.`, logic: (c) => c.map(x => Math.random() < density ? { ...x, active: true, color: col } : x) };
+                }
+            },
+            {
+                name: 'PALETTE SWAP', type: 'Data', icon: 'shuffle', create: () => ({
+                    color: '#fff', desc: `현재 그려진 모든 픽셀의 색상을 팔레트 내 다른 색으로 무작위 교체합니다.`, logic: (c) => {
+                        if (allRandomMode || colorPool.length < 2) return c.map(x => x.active ? { ...x, color: getStudioColor() } : x);
+                        const map = new Map();
+                        const shuffled = [...colorPool].sort(() => Math.random() - 0.5);
+                        colorPool.forEach((col, i) => map.set(col, shuffled[i]));
+                        return c.map(x => x.active ? { ...x, color: map.get(x.color) || x.color } : x);
                     }
                 })
             },
 
-            // --- SHAPE GENERATORS ---
+            // --- 기존 고급 로직 유지 ---
             {
-                name: 'CIRCULAR CORE', type: 'Shape', icon: 'circle', create: () => {
-                    const col = getStudioColor(); const r = 5 + Math.random() * 15, cx = 10 + Math.random() * 28, cy = 10 + Math.random() * 28;
-                    return { color: col, desc: `반지름 ${r.toFixed(0)}의 원형 조형 주입.`, logic: (c) => c.map(x => (Math.sqrt((x.x - cx) ** 2 + (x.y - cy) ** 2) < r) ? { ...x, active: true, color: col } : x) };
+                name: 'CIRCULAR CORE', type: 'Gen', icon: 'circle', create: () => {
+                    const col = getStudioColor(); const r = 6 + Math.random() * 14, cx = 10 + Math.random() * 28, cy = 10 + Math.random() * 28;
+                    return { color: col, desc: `반지름 ${r.toFixed(0)}의 원형 조형 데이터를 주입합니다.`, logic: (c) => c.map(x => (Math.sqrt((x.x - cx) ** 2 + (x.y - cy) ** 2) < r) ? { ...x, active: true, color: col } : x) };
                 }
             },
             {
-                name: 'TRIANGLE MESH', type: 'Shape', icon: 'triangle', create: () => {
-                    const col = getStudioColor(); const p = Array.from({ length: 3 }, () => ({ x: Math.random() * 48, y: Math.random() * 48 }));
+                name: 'TRIANGLE MESH', type: 'Gen', icon: 'triangle', create: () => {
+                    const col = getStudioColor(); const pts = Array.from({ length: 3 }, () => ({ x: Math.random() * 48, y: Math.random() * 48 }));
                     return {
-                        color: col, desc: `삼각형 폴리곤 영역 채색.`, logic: (c) => {
-                            const area = 0.5 * (-p[1].y * p[2].x + p[0].y * (-p[1].x + p[2].x) + p[0].x * (p[1].y - p[2].y) + p[1].x * p[2].y);
+                        color: col, desc: `세 점을 잇는 삼각형 폴리곤 영역을 채색합니다.`, logic: (c) => {
+                            const area = 0.5 * (-pts[1].y * pts[2].x + pts[0].y * (-pts[1].x + pts[2].x) + pts[0].x * (pts[1].y - pts[2].y) + pts[1].x * pts[2].y);
                             return c.map(pt => {
-                                const s = 1 / (2 * area) * (p[0].y * p[2].x - p[0].x * p[2].y + (p[2].y - p[0].y) * pt.x + (p[0].x - p[2].x) * pt.y), t = 1 / (2 * area) * (p[0].x * p[1].y - p[0].y * p[1].x + (p[0].y - p[1].y) * pt.x + (p[1].x - p[0].x) * pt.y);
+                                const s = 1 / (2 * area) * (pts[0].y * pts[2].x - pts[0].x * pts[2].y + (pts[2].y - pts[0].y) * pt.x + (pts[0].x - pts[2].x) * pt.y), t = 1 / (2 * area) * (pts[0].x * pts[1].y - pts[0].y * pts[1].x + (pts[0].y - pts[1].y) * pt.x + (pts[1].x - pts[0].x) * pt.y);
                                 return (s > 0 && t > 0 && 1 - s - t > 0) ? { ...pt, active: true, color: col } : pt;
                             });
                         }
@@ -497,78 +572,30 @@
                 }
             },
             {
-                name: 'CONCENTRIC RINGS', type: 'Shape', icon: 'target', create: () => {
-                    const col = getStudioColor(); const g = 3 + Math.random() * 5;
-                    return { color: col, desc: `${g.toFixed(0)}픽셀 주기의 동심원 패턴 생성.`, logic: (c) => c.map(x => (Math.floor(Math.sqrt((x.x - 24) ** 2 + (x.y - 24) ** 2)) % Math.floor(g) === 0) ? { ...x, active: true, color: col } : x) };
-                }
-            },
-
-            // --- SPATIAL / SYMMETRY ---
-            {
-                name: 'QUADRANT SYNC', type: 'Spatial', icon: 'layout-grid', create: () => {
-                    const srcQ = Math.floor(Math.random() * 4);
-                    return {
-                        color: '#00f2ff', desc: `무작위 사분면(${srcQ + 1})을 전체 영역으로 패턴 복제합니다.`, logic: (c) => {
-                            const next = [...c]; const xO = (srcQ % 2) * 24, yO = Math.floor(srcQ / 2) * 24;
-                            for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) {
-                                const s = c[(y + yO) * 48 + (x + xO)]; for (let i = 0; i < 4; i++) { const tx = x + (i % 2) * 24, ty = y + Math.floor(i / 2) * 24; next[ty * 48 + tx] = { ...s, x: tx, y: ty }; }
-                            } return next;
-                        }
-                    };
-                }
-            },
-            {
-                name: 'RANDOM MIRROR', type: 'Spatial', icon: 'combine', create: () => {
-                    const axis = Math.random() > 0.5 ? 'X' : 'Y'; const side = Math.random() > 0.5 ? 0 : 1;
-                    return {
-                        color: '#ec4899', desc: `무작위 축(${axis})을 기준으로 대칭 반사 시킵니다.`, logic: (c) => {
-                            const next = [...c];
-                            if (axis === 'X') { for (let y = 0; y < 48; y++) for (let x = 0; x < 24; x++) { const s = side ? c[y * 48 + (47 - x)] : c[y * 48 + x], tx = side ? x : 47 - x; next[y * 48 + tx] = { ...s, x: tx, y: y }; } }
-                            else { for (let x = 0; x < 48; x++) for (let y = 0; y < 24; y++) { const s = side ? c[(47 - y) * 48 + x] : c[y * 48 + x], ty = side ? y : 47 - y; next[ty * 48 + x] = { ...s, x: x, y: ty }; } }
-                            return next;
-                        }
-                    };
-                }
-            },
-            {
                 name: 'ANGULAR SYM', type: 'Spatial', icon: 'refresh-ccw', create: () => ({
-                    color: '#fbbf24', desc: `중심 기반 4방향 회전 대칭을 완성합니다.`, logic: (c) => {
-                        const next = [...c]; for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) { const s = c[y * 48 + x]; if (!s.active) continue;[[47 - x, y], [x, 47 - y], [47 - x, 47 - y]].forEach(([sx, sy]) => { next[sy * 48 + sx] = { ...s, x: sx, y: sy, active: true }; }); } return next;
+                    color: '#fbbf24', desc: `중심 기반 4방향 회전 대칭 조형을 완성합니다.`, logic: (c) => {
+                        const next = [...c]; for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) {
+                            const s = c[y * 48 + x]; if (!s.active) continue;
+                            [[47 - x, y], [x, 47 - y], [47 - x, 47 - y]].forEach(([sx, sy]) => { next[sy * 48 + sx] = { ...s, x: sx, y: sy, active: true }; });
+                        } return next;
                     }
                 })
             },
-
             {
                 name: 'KALEIDOSCOPE 8', type: 'Spatial', icon: 'snowflake', create: () => ({
-                    color: '#fbbf24', desc: `8분할 만화경 대칭으로 기하학적 완결성을 높입니다.`, logic: (c) => {
-                        const next = [...c];
-                        for (let y = 0; y < 24; y++) for (let x = 0; x <= y; x++) {
-                            const s = c[y * 48 + x];
-                            const syms = [[x, y], [y, x], [47 - x, y], [47 - y, x], [x, 47 - y], [y, 47 - x], [47 - x, 47 - y], [47 - y, 47 - x]];
+                    color: '#fbbf24', desc: `8분할 만화경 대칭으로 기하학적 미학을 극대화합니다.`, logic: (c) => {
+                        const next = [...c]; for (let y = 0; y < 24; y++) for (let x = 0; x <= y; x++) {
+                            const s = c[y * 48 + x]; const syms = [[x, y], [y, x], [47 - x, y], [47 - y, x], [x, 47 - y], [y, 47 - x], [47 - x, 47 - y], [47 - y, 47 - x]];
                             syms.forEach(([sx, sy]) => { next[sy * 48 + sx] = { ...s, x: sx, y: sy }; });
                         } return next;
                     }
                 })
             },
-
-            // --- MUTATORS / WARPS ---
-            {
-                name: 'GLITCH TEAR', type: 'Warp', icon: 'scissors', create: () => {
-                    const sY = Math.floor(Math.random() * 48), o = Math.floor(Math.random() * 12) - 6;
-                    return { color: '#ffffff', desc: `그리드 단면을 잘라 수평으로 오프셋 시킵니다.`, logic: (c) => c.map(x => (x.y > sY) ? { ...x, x: (x.x + o + 48) % 48 } : x) };
-                }
-            },
-            {
-                name: 'LIQUID WAVE', type: 'Warp', icon: 'waves', create: () => {
-                    const a = 2 + Math.random() * 5;
-                    return { color: '#00f2ff', desc: `사인 파동 왜곡으로 유동적인 질감을 만듭니다.`, logic: (c) => c.map(x => ({ ...x, x: (x.x + Math.floor(Math.sin(x.y * 0.2) * a) + 48) % 48 })) };
-                }
-            },
             {
                 name: 'VECTOR DRIFT', type: 'Gravity', icon: 'wind', create: () => {
                     const d = ['UP', 'DOWN', 'LEFT', 'RIGHT'][Math.floor(Math.random() * 4)];
                     return {
-                        color: '#10b981', desc: `${d} 방향으로 데이터를 밀어냅니다.`, logic: (c) => {
+                        color: '#10b981', desc: `${d} 방향 가속도로 데이터를 쏠리게 유도합니다.`, logic: (c) => {
                             const next = c.map(x => ({ ...x, active: false }));
                             if (d === 'DOWN') { for (let x = 0; x < 48; x++) { const acs = c.filter(p => p.x === x && p.active); acs.forEach((a, i) => { const ty = 47 - i; next[ty * 48 + x] = { ...a, y: ty, active: true }; }); } }
                             else if (d === 'UP') { for (let x = 0; x < 48; x++) { const acs = c.filter(p => p.x === x && p.active); acs.forEach((a, i) => { const ty = i; next[ty * 48 + x] = { ...a, y: ty, active: true }; }); } }
@@ -579,52 +606,44 @@
                     };
                 }
             },
-
             {
                 name: 'GRAVITY WELL', type: 'Gravity', icon: 'magnet', create: () => {
-                    const cx = Math.floor(10 + Math.random() * 28), cy = Math.floor(10 + Math.random() * 28);
-                    const pull = Math.random() > 0.3;
+                    const cx = Math.floor(10 + Math.random() * 28), cy = Math.floor(10 + Math.random() * 28), pull = Math.random() > 0.3;
                     return {
-                        color: '#fb7185', desc: `특정 지점으로 픽셀을 ${pull ? '당기거나' : '밉니다'}.`, logic: (c) => {
+                        color: '#fb7185', desc: `특정 지점(${cx},${cy})으로 데이터를 ${pull ? '당깁니다' : '밉니다'}.`, logic: (c) => {
                             const next = c.map(x => ({ ...x, active: false }));
                             c.filter(p => p.active).forEach(p => {
                                 let nx = p.x, ny = p.y;
                                 if (pull) { if (nx < cx) nx++; else if (nx > cx) nx--; if (ny < cy) ny++; else if (ny > cy) ny--; }
                                 else { if (nx < cx) nx--; else if (nx > cx) nx++; if (ny < cy) ny--; else if (ny > cy) ny++; }
-                                nx = (nx + 48) % 48; ny = (ny + 48) % 48;
-                                next[ny * 48 + nx] = { ...p, x: nx, y: ny, active: true };
-                            });
-                            return next;
+                                nx = (nx + 48) % 48; ny = (ny + 48) % 48; next[ny * 48 + nx] = { ...p, x: nx, y: ny, active: true };
+                            }); return next;
                         }
                     };
                 }
             },
-
-            {
-                name: 'DIFFUSION', type: 'Warp', icon: 'expand', create: () => ({
-                    color: '#a78bfa', desc: `활성 픽셀이 주변으로 유기적으로 번져나갑니다.`, logic: (c) => {
-                        const next = [...c];
-                        c.filter(p => p.active).forEach(p => {
-                            if (Math.random() > 0.5) {
-                                const dx = Math.floor(Math.random() * 3) - 1, dy = Math.floor(Math.random() * 3) - 1;
-                                const nx = (p.x + dx + 48) % 48, ny = (p.y + dy + 48) % 48;
-                                next[ny * 48 + nx] = { ...p, x: nx, y: ny, active: true };
-                            }
-                        });
-                        return next;
-                    }
-                })
-            },
-
-            // --- LIFE ---
             {
                 name: 'LIFE STEP', type: 'Life', icon: 'dna', create: () => ({
-                    color: '#8b5cf6', desc: `세포 자동자 규칙으로 패턴을 진화시킵니다.`, logic: (c) => c.map((x, i) => {
+                    color: '#8b5cf6', desc: `생태계 진화 규칙을 적용하여 새로운 세대를 낳습니다.`, logic: (c) => c.map((x, i) => {
                         let n = 0, colors = []; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (dx === 0 && dy === 0) continue; const nx = (x.x + dx + 48) % 48, ny = (x.y + dy + 48) % 48, nb = c[ny * 48 + nx]; if (nb.active) { n++; colors.push(nb.color); } }
                         const live = x.active ? (n === 2 || n === 3) : (n === 3);
                         let nCol = x.color; if (!x.active && live && colors.length > 0) nCol = colors[Math.floor(Math.random() * colors.length)];
                         return { ...x, active: live, color: nCol };
                     })
+                })
+            },
+            {
+                name: 'DIFFUSION', type: 'Warp', icon: 'expand', create: () => ({
+                    color: '#a78bfa', desc: `활성 픽셀이 주변으로 유기적으로 번져나갑니다.`, logic: (c) => {
+                        const next = [...c];
+                        c.filter(p => p.active).forEach(p => {
+                            if (Math.random() > 0.6) {
+                                const nx = (p.x + (Math.floor(Math.random() * 3) - 1) + 48) % 48, ny = (p.y + (Math.floor(Math.random() * 3) - 1) + 48) % 48;
+                                next[ny * 48 + nx] = { ...p, x: nx, y: ny, active: true };
+                            }
+                        });
+                        return next;
+                    }
                 })
             }
         ];
@@ -639,6 +658,9 @@
         }
 
         function rerollHand() {
+            if (isChallengeMode && remainingRerolls <= 0) return;
+            if (isChallengeMode) remainingRerolls--;
+            updateGameStats();
             const h = document.getElementById('hand'); h.innerHTML = '';
             for (let i = 0; i < 4; i++) {
                 const t = CARD_TEMPLATES[Math.floor(Math.random() * CARD_TEMPLATES.length)];
@@ -650,29 +672,39 @@
             lucide.createIcons();
         }
 
+        function updateGameStats() {
+            if (!isChallengeMode) return;
+            document.getElementById('turn-stat').innerText = remainingTurns;
+            document.getElementById('reroll-stat').innerText = remainingRerolls;
+            document.getElementById('reroll-btn').disabled = remainingRerolls <= 0;
+            if (remainingTurns <= 0) document.getElementById('finish-overlay').classList.remove('opacity-0', 'pointer-events-none');
+        }
+
         async function playCard(card) {
+            if (isChallengeMode && remainingTurns <= 0) return;
             const o = document.getElementById('compiler-overlay'); const w = document.getElementById('canvas-wrapper');
             o.classList.remove('opacity-0', 'pointer-events-none'); w.classList.add('compiling-active');
             await new Promise(r => setTimeout(r, 450));
             const nR = card.logic([...cells]);
             if (isBlendMode) cells = nR.map((nC, i) => { const oC = cells[i]; if (oC.active && nC.active && oC.color !== nC.color) return { ...nC, color: mixColors(oC.color, nC.color) }; return nC; });
             else cells = nR;
-            turn++; const l = document.getElementById('history-log'); if (l.querySelector('div.italic')) l.innerHTML = '';
+            turnCount++;
+            if (isChallengeMode) { remainingTurns--; remainingRerolls = 2; }
+            const l = document.getElementById('history-log'); if (l.querySelector('div.italic')) l.innerHTML = '';
             const e = document.createElement('div'); e.className = 'flex items-center gap-3 border-b border-white/5 pb-2 animate-in';
-            e.innerHTML = `<span class="text-slate-700">[${turn}]</span> <span style="color: ${card.color}">${card.name}</span> <span class="ml-auto text-slate-600">SUCCESS</span>`; l.prepend(e);
-            document.getElementById('cycle-count').innerText = `CYC: ${turn.toString().padStart(3, '0')}`;
-            renderGrid(); rerollHand(); o.classList.add('opacity-0', 'pointer-events-none'); w.classList.remove('compiling-active');
+            e.innerHTML = `<span class="text-slate-700">[${turnCount}]</span> <span style="color: ${card.color}">${card.name}</span> <span class="ml-auto text-slate-600">EXEC</span>`; l.prepend(e);
+            document.getElementById('cycle-count').innerText = `CYC: ${turnCount.toString().padStart(3, '0')}`;
+            updateGameStats(); renderGrid(); if (remainingTurns > 0 || !isChallengeMode) rerollHand();
+            o.classList.add('opacity-0', 'pointer-events-none'); w.classList.remove('compiling-active');
         }
 
         function exportImage(mode) {
             const c = document.getElementById('export-canvas'), ctx = c.getContext('2d'), pS = 10, w = 48 * pS, h = 48 * pS;
             if (mode === 'single') { c.width = w; c.height = h; drawM(ctx, cells, 0, 0, pS, 0); }
             else {
-                c.width = w * 2; c.height = h * 2;
-                if (mode === 'repeat') { [0, w].forEach(dx => [0, h].forEach(dy => drawM(ctx, cells, dx, dy, pS, 0))); }
-                else { drawM(ctx, cells, 0, 0, pS, 0); drawM(ctx, cells, w * 2, 0, pS, 90); drawM(ctx, cells, 0, h * 2, pS, 270); drawM(ctx, cells, w * 2, h * 2, pS, 180); }
+                c.width = w * 2; c.height = h * 2; if (mode === 'repeat') [0, w].forEach(dx => [0, h].forEach(dy => drawM(ctx, cells, dx, dy, pS, 0))); else { drawM(ctx, cells, 0, 0, pS, 0); drawM(ctx, cells, w * 2, 0, pS, 90); drawM(ctx, cells, 0, h * 2, pS, 270); drawM(ctx, cells, w * 2, h * 2, pS, 180); }
             }
-            const l = document.createElement('a'); l.download = `GridArt_${mode}_${Date.now()}.png`; l.href = c.toDataURL('image/png'); l.click();
+            const l = document.createElement('a'); l.download = `Alchemy_${mode}_${Date.now()}.png`; l.href = c.toDataURL('image/png'); l.click();
         }
         function drawM(ctx, d, ox, oy, ps, rot) { ctx.save(); ctx.translate(ox, oy); if (rot !== 0) ctx.rotate((rot * Math.PI) / 180); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 48 * ps, 48 * ps); d.forEach(c => { if (c.active) { ctx.fillStyle = c.color; if (isBlendMode) ctx.globalAlpha = 0.8; ctx.fillRect(c.x * ps, c.y * ps, ps, ps); ctx.globalAlpha = 1.0; } }); ctx.restore(); }
 
