@@ -233,8 +233,8 @@
                         </div>
                         <div class="space-y-3 pt-6 border-t border-white/10">
                             <button id="start-btn" onclick="startStudio(false)" disabled
-                                class="w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed">Launch
-                                10 Colors</button>
+                                class="w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed transition-all">Launch
+                                with 0 Colors</button>
                             <button onclick="startStudio(true)"
                                 class="w-full py-3 text-[9px] text-white/30 hover:text-white transition-all uppercase tracking-[0.4em] font-bold">All
                                 Random Spectrum Mode</button>
@@ -400,14 +400,23 @@
             }
             document.getElementById('pool-count').innerText = `${colorPool.length}/10`;
             const btn = document.getElementById('start-btn');
-            if (colorPool.length === 10) { btn.disabled = false; btn.className = 'w-full py-5 bg-cyan-500 text-black text-xs font-black uppercase tracking-[0.3em] hover:bg-white transition-all shadow-xl'; btn.innerText = 'Start Lab'; }
-            else { btn.disabled = true; btn.className = 'w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed'; }
+            // --- MODIFIED: ALLOW STARTING WITH ANY COLOR COUNT > 0 ---
+            if (colorPool.length > 0) {
+                btn.disabled = false;
+                btn.className = 'w-full py-5 bg-cyan-500 text-black text-xs font-black uppercase tracking-[0.3em] hover:bg-white transition-all shadow-xl';
+                btn.innerText = `Launch with ${colorPool.length} Color${colorPool.length > 1 ? 's' : ''}`;
+            } else {
+                btn.disabled = true;
+                btn.className = 'w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed';
+                btn.innerText = 'Select at least 1 Color';
+            }
         }
 
         function startStudio(allR) {
             allRandomMode = allR; document.getElementById('setup-screen').classList.add('setup-hidden'); document.getElementById('app').classList.remove('opacity-0');
             const cp = document.getElementById('current-palette-display'); cp.innerHTML = '';
             if (!allRandomMode) colorPool.forEach(c => { const d = document.createElement('div'); d.className = 'w-2 h-2 rounded-full'; d.style.backgroundColor = c; cp.appendChild(d); });
+            else cp.innerText = 'RAND_MODE';
             initGrid(); rerollHand(); lucide.createIcons();
         }
 
@@ -450,12 +459,12 @@
                 }
             },
 
-            // --- NEW: PALETTE QUANTIZE ---
+            // --- PALETTE QUANTIZE (Fixed for dynamic pool size) ---
             {
                 name: 'PALETTE SYNC', type: 'Data', icon: 'droplets', create: () => ({
-                    color: '#fff', desc: `캔버스의 모든 색을 팔레트 상위 3색으로 강제 수렴시킵니다.`, logic: (c) => {
-                        if (allRandomMode) return c;
-                        const subPal = colorPool.slice(0, 3);
+                    color: '#fff', desc: `캔버스의 모든 색을 고정된 팔레트 내에서 가장 가까운 색으로 정렬합니다.`, logic: (c) => {
+                        if (allRandomMode || colorPool.length === 0) return c;
+                        const subPal = colorPool.slice(0, Math.min(3, colorPool.length));
                         return c.map(p => {
                             if (!p.active) return p;
                             let best = subPal[0], min = Infinity;
@@ -529,10 +538,9 @@
                 })
             },
 
-            // --- NEW: KALEIDOSCOPE N (8 Sectors) ---
             {
                 name: 'KALEIDOSCOPE 8', type: 'Spatial', icon: 'snowflake', create: () => ({
-                    color: '#fbbf24', desc: `8분할 만화경 대칭을 적용하여 기하학적 완결성을 높입니다.`, logic: (c) => {
+                    color: '#fbbf24', desc: `8분할 만화경 대칭으로 기하학적 완결성을 높입니다.`, logic: (c) => {
                         const next = [...c];
                         for (let y = 0; y < 24; y++) for (let x = 0; x <= y; x++) {
                             const s = c[y * 48 + x];
@@ -572,7 +580,6 @@
                 }
             },
 
-            // --- NEW: GRAVITY WELL ---
             {
                 name: 'GRAVITY WELL', type: 'Gravity', icon: 'magnet', create: () => {
                     const cx = Math.floor(10 + Math.random() * 28), cy = Math.floor(10 + Math.random() * 28);
@@ -593,7 +600,6 @@
                 }
             },
 
-            // --- NEW: DIFFUSION BLOOM ---
             {
                 name: 'DIFFUSION', type: 'Warp', icon: 'expand', create: () => ({
                     color: '#a78bfa', desc: `활성 픽셀이 주변으로 유기적으로 번져나갑니다.`, logic: (c) => {
@@ -613,7 +619,7 @@
             // --- LIFE ---
             {
                 name: 'LIFE STEP', type: 'Life', icon: 'dna', create: () => ({
-                    color: '#8b5cf6', desc: `생태계 진화 규칙을 적용합니다.`, logic: (c) => c.map((x, i) => {
+                    color: '#8b5cf6', desc: `세포 자동자 규칙으로 패턴을 진화시킵니다.`, logic: (c) => c.map((x, i) => {
                         let n = 0, colors = []; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (dx === 0 && dy === 0) continue; const nx = (x.x + dx + 48) % 48, ny = (x.y + dy + 48) % 48, nb = c[ny * 48 + nx]; if (nb.active) { n++; colors.push(nb.color); } }
                         const live = x.active ? (n === 2 || n === 3) : (n === 3);
                         let nCol = x.color; if (!x.active && live && colors.length > 0) nCol = colors[Math.floor(Math.random() * colors.length)];
