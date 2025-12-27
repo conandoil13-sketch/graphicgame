@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grid Alchemist: 60x60 Ultra Studio</title>
+    <title>Grid Alchemist: 60x60 Ultimate 7-Card Deck</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -196,6 +196,24 @@
             padding: 0;
             width: 100%;
             font-family: inherit;
+            color: white;
+        }
+
+        @keyframes reveal-card {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .reveal-anim {
+            animation: reveal-card 0.5s ease-out forwards;
+            opacity: 0;
         }
     </style>
 </head>
@@ -278,11 +296,11 @@
                     </div>
                     <div id="selected-pool" class="grid grid-cols-5 gap-3 mb-8 min-h-[100px]"></div>
 
+                    <!-- GAME MODE TOGGLE -->
                     <div class="bg-white/5 p-4 border border-white/5 rounded-sm mb-6 flex items-center justify-between">
                         <div class="space-y-1">
                             <h4 class="text-[10px] font-black text-white uppercase tracking-widest">Challenge Mode</h4>
-                            <p class="text-[8px] text-slate-500 leading-tight">20 turns limit / 2 rerolls per choice.
-                            </p>
+                            <p class="text-[8px] text-slate-500 leading-tight">20 turns / Random 7-Card Deck.</p>
                         </div>
                         <label class="switch">
                             <input type="checkbox" id="game-mode-toggle">
@@ -292,15 +310,14 @@
 
                     <div class="space-y-6 mt-auto">
                         <div>
-                            <h4 class="text-[9px] font-bold text-slate-600 uppercase tracking-widest mb-3">Color Presets
-                            </h4>
+                            <h4 class="text-[9px] font-bold text-slate-600 uppercase tracking-widest mb-3">Presets</h4>
                             <div class="grid grid-cols-3 gap-2">
                                 <button onclick="applyPreset('BAUHAUS')"
                                     class="py-2 border border-white/5 hover:border-white/20 transition-all text-[8px] font-bold uppercase bg-white/5">Bauhaus</button>
                                 <button onclick="applyPreset('CYBER')"
-                                    class="py-2 border border-white/5 hover:border-white/30 transition-all text-[8px] font-bold uppercase bg-white/5">Cyber</button>
+                                    class="py-2 border border-white/5 hover:border-white/20 transition-all text-[8px] font-bold uppercase bg-white/5">Cyber</button>
                                 <button onclick="applyPreset('MONO')"
-                                    class="py-2 border border-white/5 hover:border-white/30 transition-all text-[8px] font-bold uppercase bg-white/5">Mono</button>
+                                    class="py-2 border border-white/5 hover:border-white/20 transition-all text-[8px] font-bold uppercase bg-white/5">Mono</button>
                                 <button onclick="applyPreset('SYNTH')"
                                     class="py-2 border border-white/5 hover:border-white/20 transition-all text-[8px] font-bold uppercase bg-white/5">Synth</button>
                                 <button onclick="applyPreset('EARTH')"
@@ -311,15 +328,32 @@
                         </div>
                         <div class="space-y-3 pt-6 border-t border-white/10">
                             <button id="start-btn" onclick="startStudio(false)" disabled
-                                class="w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed transition-all">Collect
-                                Colors</button>
+                                class="w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed transition-all">Launch
+                                Lab</button>
                             <button onclick="startStudio(true)"
                                 class="w-full py-3 text-[9px] text-white/30 hover:text-white transition-all uppercase tracking-[0.4em] font-bold">All
-                                Random Spectrum Mode</button>
+                                Random Mode</button>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- DECK REVEAL MODAL -->
+    <div id="deck-reveal-screen"
+        class="fixed inset-0 z-[2000] bg-black/95 backdrop-blur-xl flex items-center justify-center hidden">
+        <div class="max-w-4xl w-full p-12 flex flex-col items-center">
+            <div class="text-cyan-400 text-[10px] font-black uppercase tracking-[0.6em] mb-4">Challenge Protocol Active
+            </div>
+            <h2 class="text-4xl font-black text-white italic uppercase tracking-tighter mb-2">Deck Synchronized</h2>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-12 text-center">당신의 실험을 위해 7장의 카드가
+                선택되었습니다.</p>
+            <div id="deck-display-list" class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full mb-16"></div>
+            <button onclick="closeDeckReveal()"
+                class="px-12 py-5 bg-white text-black text-xs font-black uppercase tracking-[0.5em] hover:bg-cyan-400 transition-all shadow-[0_0_40px_rgba(255,255,255,0.1)]">
+                Initialize Design Session
+            </button>
         </div>
     </div>
 
@@ -338,7 +372,7 @@
                     Grid Alchemist</h1>
                 <p id="palette-indicator"
                     class="text-[11px] text-slate-500 mt-4 font-bold tracking-[0.2em] uppercase italic">>>>
-                    High-Resolution 3,600 Node Matrix Active</p>
+                    High-Resolution 60x60 Grid Active</p>
             </div>
             <div class="flex flex-wrap justify-center gap-3">
                 <button id="blend-toggle" onclick="toggleBlendMode()"
@@ -384,11 +418,11 @@
                         <i data-lucide="trophy" class="w-16 h-16 text-amber-500 mb-6"></i>
                         <h2 class="text-3xl font-black text-white uppercase tracking-[0.3em] mb-2 text-center">Creation
                             Finalized</h2>
-                        <p class="text-xs text-slate-500 uppercase tracking-widest mb-10">60x60 Challenge Mode
-                            Accomplished.</p>
+                        <p class="text-xs text-slate-500 uppercase tracking-widest mb-10 text-center">60x60 Ultra
+                            Workpiece.</p>
                         <button onclick="exportImage('radial')"
                             class="px-10 py-4 bg-cyan-600 text-black text-xs font-black uppercase tracking-[0.5em] hover:bg-white transition-all">Export
-                            Artwork</button>
+                            Result</button>
                     </div>
                 </div>
             </div>
@@ -405,7 +439,10 @@
                         <span id="reroll-stat" class="text-3xl font-black text-cyan-400">2</span>
                     </div>
                 </div>
-
+                <div id="deck-sidebar" class="glass p-4 hidden">
+                    <h3 class="text-[9px] font-black text-white/40 uppercase tracking-[0.3em] mb-3">Active Deck</h3>
+                    <div id="deck-icons" class="flex flex-wrap gap-2"></div>
+                </div>
                 <div class="glass p-6 h-[200px] flex flex-col relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-1 bg-cyan-500/20"></div>
                     <h2
@@ -413,10 +450,9 @@
                         <i data-lucide="terminal" class="w-4 h-4"></i> Protocol_Stream.log</h2>
                     <div id="history-log"
                         class="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-2 font-mono text-[10px]">
-                        <div class="text-slate-800 italic uppercase">Initializing 60x60 Workspace...</div>
+                        <div class="text-slate-800 italic uppercase">Initializing Workspace...</div>
                     </div>
                 </div>
-
                 <div class="space-y-4">
                     <div class="flex justify-between items-center border-b border-white/5 pb-3">
                         <h2 class="text-[10px] font-black text-white uppercase tracking-[0.4em]">Design Protocol</h2>
@@ -439,21 +475,22 @@
     <canvas id="export-canvas" style="display:none;"></canvas>
 
     <script>
-        const GRID_SIZE = 60; // 캔버스 크기 상향
-        const TOTAL = GRID_SIZE * GRID_SIZE;
-        const MID = GRID_SIZE / 2;
-        let cells = [];
-        let turnCount = 0;
-        let isBlendMode = false;
-        let colorPool = [];
-        let allRandomMode = false;
-        let currentSelectedColor = "#00f2ff";
+        var GRID_SIZE = 60;
+        var TOTAL = GRID_SIZE * GRID_SIZE;
+        var MID = GRID_SIZE / 2;
+        var cells = [];
+        var turnCount = 0;
+        var isBlendMode = false;
+        var colorPool = [];
+        var allRandomMode = false;
+        var currentSelectedColor = "#00f2ff";
 
-        let isChallengeMode = false;
-        let remainingTurns = 20;
-        let remainingRerolls = 2;
+        var isChallengeMode = false;
+        var remainingTurns = 20;
+        var remainingRerolls = 2;
+        var activeDeck = [];
 
-        const PRESETS = {
+        var PRESETS = {
             BAUHAUS: ['#E63946', '#F1FAEE', '#A8DADC', '#457B9D', '#1D3557', '#FFD166', '#06D6A0', '#118AB2', '#073B4C', '#FFFFFF'],
             CYBER: ['#00F2FF', '#0019FF', '#FB00FF', '#7000FF', '#00FF41', '#FF0000', '#FFFF00', '#222222', '#111111', '#FFFFFF'],
             MONO: ['#FFFFFF', '#F1F5F9', '#CBD5E1', '#94A3B8', '#64748B', '#475569', '#334155', '#1E293B', '#0F172A', '#020617'],
@@ -462,9 +499,10 @@
             OCEAN: ['#0077B6', '#00B4D8', '#90E0EF', '#03045E', '#023E8A', '#CAF0F8', '#48CAE4', '#0096C7', '#FFFFFF', '#111111']
         };
 
+        // --- COLOR UTILS ---
         function hsvToRgb(h, s, v) {
             h /= 360; s /= 100; v /= 100;
-            let r, g, b, i = Math.floor(h * 6), f = h * 6 - i, p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
+            var r, g, b, i = Math.floor(h * 6), f = h * 6 - i, p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
             switch (i % 6) {
                 case 0: r = v, g = t, b = p; break; case 1: r = q, g = v, b = p; break; case 2: r = p, g = v, b = t; break;
                 case 3: r = p, g = q, b = v; break; case 4: r = t, g = p, b = v; break; case 5: r = v, g = p, b = q; break;
@@ -473,344 +511,206 @@
         }
         function rgbToHsv(r, g, b) {
             r /= 255, g /= 255, b /= 255;
-            let max = Math.max(r, g, b), min = Math.min(r, g, b), h, s, v = max, d = max - min;
+            var max = Math.max(r, g, b), min = Math.min(r, g, b), h, s, v = max, d = max - min;
             s = max === 0 ? 0 : d / max;
             if (max === min) h = 0;
             else { switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; } h /= 6; }
             return [Math.round(h * 360), Math.round(s * 100), Math.round(v * 100)];
         }
-        function rgbToHex(r, g, b) { return "#" + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join(''); }
-
-        function hexToRgb(hex) {
-            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
-        }
+        function rgbToHex(r, g, b) { return "#" + [r, g, b].map(function (x) { return x.toString(16).padStart(2, '0'); }).join(''); }
+        function hexToRgb(hex) { var res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return res ? [parseInt(res[1], 16), parseInt(res[2], 16), parseInt(res[3], 16)] : null; }
 
         function initColorSliders() {
-            const iH = document.getElementById('input-h'), iS = document.getElementById('input-s'), iB = document.getElementById('input-b');
-            const iR = document.getElementById('input-r'), iG = document.getElementById('input-g'), iBl = document.getElementById('input-bl');
-            const hexInput = document.getElementById('hex-input');
-
-            function updateFh() { const [r, g, b] = hsvToRgb(iH.value, iS.value, iB.value); iR.value = r; iG.value = g; iBl.value = b; updateUI(); }
-            function updateFr() { const [h, s, v] = rgbToHsv(iR.value, iG.value, iBl.value); iH.value = h; iS.value = s; iB.value = v; updateUI(); }
-
-            function updateFromHex() {
-                let val = hexInput.value;
-                if (!val.startsWith('#')) val = '#' + val;
-                const rgb = hexToRgb(val);
-                if (rgb) {
-                    iR.value = rgb[0]; iG.value = rgb[1]; iBl.value = rgb[2];
-                    updateFr();
-                }
-            }
-
+            var iH = document.getElementById('input-h'), iS = document.getElementById('input-s'), iB = document.getElementById('input-b');
+            var iR = document.getElementById('input-r'), iG = document.getElementById('input-g'), iBl = document.getElementById('input-bl');
+            var hexInput = document.getElementById('hex-input');
+            function updateFh() { var rgb = hsvToRgb(iH.value, iS.value, iB.value); iR.value = rgb[0]; iG.value = rgb[1]; iBl.value = rgb[2]; updateUI(); }
+            function updateFr() { var hsv = rgbToHsv(iR.value, iG.value, iBl.value); iH.value = hsv[0]; iS.value = hsv[1]; iB.value = hsv[2]; updateUI(); }
+            function updateFromHex() { var v = hexInput.value; if (!v.startsWith('#')) v = '#' + v; var rgb = hexToRgb(v); if (rgb) { iR.value = rgb[0]; iG.value = rgb[1]; iBl.value = rgb[2]; updateFr(); } }
             function updateUI() {
                 document.getElementById('r-val').innerText = iR.value; document.getElementById('g-val').innerText = iG.value; document.getElementById('bl-val').innerText = iBl.value;
                 document.getElementById('h-val').innerText = iH.value + '°'; document.getElementById('s-val').innerText = iS.value + '%'; document.getElementById('b-val').innerText = iB.value + '%';
                 currentSelectedColor = rgbToHex(parseInt(iR.value), parseInt(iG.value), parseInt(iBl.value));
                 document.getElementById('current-preview').style.backgroundColor = currentSelectedColor;
-                if (document.activeElement !== hexInput) {
-                    hexInput.value = currentSelectedColor;
-                }
+                if (document.activeElement !== hexInput) hexInput.value = currentSelectedColor;
             }
-
-            iH.oninput = iS.oninput = iB.oninput = updateFh;
-            iR.oninput = iG.oninput = iBl.oninput = updateFr;
-            hexInput.oninput = updateFromHex;
-
+            iH.oninput = iS.oninput = iB.oninput = updateFh; iR.oninput = iG.oninput = iBl.oninput = updateFr; hexInput.oninput = updateFromHex;
             updateFh();
         }
 
         function addColorFromSliders() { if (colorPool.length < 10) { colorPool.push(currentSelectedColor); updatePoolUI(); } }
-        function applyPreset(n) { colorPool = [...PRESETS[n]]; updatePoolUI(); }
+        function applyPreset(n) { colorPool = PRESETS[n].slice(); updatePoolUI(); }
         function updatePoolUI() {
-            const poolEl = document.getElementById('selected-pool'); poolEl.innerHTML = '';
-            for (let i = 0; i < 10; i++) {
-                const slot = document.createElement('div'); slot.className = 'color-slot';
-                if (colorPool[i]) { slot.style.backgroundColor = colorPool[i]; slot.onclick = () => { colorPool.splice(i, 1); updatePoolUI(); }; }
+            var poolEl = document.getElementById('selected-pool'); poolEl.innerHTML = '';
+            for (var i = 0; i < 10; i++) {
+                var slot = document.createElement('div'); slot.className = 'color-slot';
+                if (colorPool[i]) { slot.style.backgroundColor = colorPool[i]; slot.onclick = (function (idx) { return function () { colorPool.splice(idx, 1); updatePoolUI(); }; })(i); }
                 poolEl.appendChild(slot);
             }
-            document.getElementById('pool-count').innerText = `${colorPool.length}/10`;
-            const btn = document.getElementById('start-btn');
-            if (colorPool.length > 0) { btn.disabled = false; btn.className = 'w-full py-5 bg-cyan-500 text-black text-xs font-black uppercase tracking-[0.3em] hover:bg-white transition-all shadow-xl'; btn.innerText = `Launch with ${colorPool.length} Colors`; }
+            document.getElementById('pool-count').innerText = colorPool.length + "/10";
+            var btn = document.getElementById('start-btn');
+            if (colorPool.length > 0) { btn.disabled = false; btn.className = 'w-full py-5 bg-cyan-500 text-black text-xs font-black uppercase tracking-[0.3em] hover:bg-white transition-all shadow-xl'; btn.innerText = "Launch Art Studio (" + colorPool.length + ")"; }
             else { btn.disabled = true; btn.className = 'w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed'; btn.innerText = 'Select Colors'; }
         }
 
+        var CARD_TEMPLATES = [
+            // Category: Generation (8)
+            { name: 'STEP SAMPLER', category: 'Generation', icon: 'hash', create: function () { var col = getStudioColor(); var n = Math.floor(Math.random() * 10) + 5; return { color: col, desc: n + "번째 슬롯마다 픽셀 배치.", logic: function (c) { return c.map(function (x, i) { return i % n === 0 ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
+            { name: 'MODULO MESH', category: 'Generation', icon: 'grid', create: function () { var col = getStudioColor(); var m = Math.floor(Math.random() * 8) + 8; return { color: col, desc: m + "픽셀 주기로 격자망 형성.", logic: function (c) { return c.map(function (x) { return (x.x % m === 0 || x.y % m === 0) ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
+            { name: 'CONCENTRIC RINGS', category: 'Generation', icon: 'target', create: function () { var col = getStudioColor(); var gap = 4 + Math.random() * 6; return { color: col, desc: "중심 기반 동심원 패턴 주입.", logic: function (c) { return c.map(function (x) { return (Math.floor(Math.sqrt(Math.pow(x.x - (GRID_SIZE / 2 - 0.5), 2) + Math.pow(x.y - (GRID_SIZE / 2 - 0.5), 2))) % Math.floor(gap) === 0) ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
+            { name: 'TRIANGLE MESH', category: 'Generation', icon: 'triangle', create: function () { var col = getStudioColor(); var pts = Array.from({ length: 3 }, function () { return { x: Math.random() * GRID_SIZE, y: Math.random() * GRID_SIZE }; }); return { color: col, desc: "랜덤 삼각형 폴리곤 채색.", logic: function (c) { var area = 0.5 * (-pts[1].y * pts[2].x + pts[0].y * (-pts[1].x + pts[2].x) + pts[0].x * (pts[1].y - pts[2].y) + pts[1].x * pts[2].y); return c.map(function (pt) { var s = 1 / (2 * area) * (pts[0].y * pts[2].x - pts[0].x * pts[2].y + (pts[2].y - pts[0].y) * pt.x + (pts[0].x - pts[2].x) * pt.y); var t = 1 / (2 * area) * (pts[0].x * pts[1].y - pts[0].y * pts[1].x + (pts[0].y - pts[1].y) * pt.x + (pts[1].x - pts[0].x) * pt.y); return (s > 0 && t > 0 && 1 - s - t > 0) ? Object.assign({}, pt, { active: true, color: col }) : pt; }); } }; } },
+            { name: 'CIRCULAR CORE', category: 'Generation', icon: 'circle', create: function () { var col = getStudioColor(); var r = 8 + Math.random() * 18, cx = 15 + Math.random() * 30, cy = 15 + Math.random() * 30; return { color: col, desc: "반지름 " + r.toFixed(0) + "의 원형 데이터를 주입.", logic: function (c) { return c.map(function (x) { return (Math.sqrt(Math.pow(x.x - cx, 2) + Math.pow(x.y - cy, 2)) < r) ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
+            { name: 'STOCHASTIC NOISE', category: 'Generation', icon: 'sparkles', create: function () { var col = getStudioColor(); var den = 0.05 + Math.random() * 0.15; return { color: col, desc: "무작위 픽셀 노이즈 살포.", logic: function (c) { return c.map(function (x) { return Math.random() < den ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
+            { name: 'BIO-MORPH', category: 'Generation', icon: 'dna', create: function () { var col = getStudioColor(); var sc = 0.05 + Math.random() * 0.15; var th = -0.2 + Math.random() * 0.4; return { color: col, desc: "유기적 세포 조형 생성.", logic: function (c) { return c.map(function (p) { var val = Math.sin(p.x * sc) + Math.cos(p.y * sc) + Math.sin((p.x + p.y) * sc * 0.5); return val > th ? Object.assign({}, p, { active: true, color: col }) : p; }); } }; } },
+            { name: 'LIFE STEP', category: 'Generation', icon: 'activity', create: function () { return { color: '#8b5cf6', desc: "생태계 진화 규칙 1세대 적용.", logic: function (c) { return c.map(function (x, i) { let n = 0, colors = []; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (dx === 0 && dy === 0) continue; const nx = (x.x + dx + GRID_SIZE) % GRID_SIZE, ny = (x.y + dy + GRID_SIZE) % GRID_SIZE, nb = c[ny * GRID_SIZE + nx]; if (nb.active) { n++; colors.push(nb.color); } } const live = x.active ? (n === 2 || n === 3) : (n === 3); let nCol = x.color; if (!x.active && live && colors.length > 0) nCol = colors[Math.floor(Math.random() * colors.length)]; return Object.assign({}, x, { active: live, color: nCol }); }); } }; } },
+
+            // Category: Distortion (6)
+            { name: 'VECTOR DRIFT', category: 'Distortion', icon: 'wind', create: function () { var d = ['UP', 'DOWN', 'LEFT', 'RIGHT'][Math.floor(Math.random() * 4)]; return { color: '#10b981', desc: d + " 방향 가속도 적용.", logic: function (c) { var next = c.map(function (x) { return Object.assign({}, x, { active: false }); }); if (d === 'DOWN') { for (var x = 0; x < GRID_SIZE; x++) { var acs = c.filter(function (p) { return p.x === x && p.active; }); acs.forEach(function (a, i) { var ty = (GRID_SIZE - 1) - i; next[ty * GRID_SIZE + x] = Object.assign({}, a, { y: ty, active: true }); }); } } else if (d === 'UP') { for (var x = 0; x < GRID_SIZE; x++) { var acs = c.filter(function (p) { return p.x === x && p.active; }); acs.forEach(function (a, i) { var ty = i; next[ty * GRID_SIZE + x] = Object.assign({}, a, { y: ty, active: true }); }); } } else if (d === 'RIGHT') { for (var y = 0; y < GRID_SIZE; y++) { var acs = c.filter(function (p) { return p.y === y && p.active; }); acs.forEach(function (a, i) { var tx = (GRID_SIZE - 1) - i; next[y * GRID_SIZE + tx] = Object.assign({}, a, { x: tx, active: true }); }); } } else { for (var y = 0; y < GRID_SIZE; y++) { var acs = c.filter(function (p) { return p.y === y && p.active; }); acs.forEach(function (a, i) { var tx = i; next[y * GRID_SIZE + tx] = Object.assign({}, a, { x: tx, active: true }); }); } } return next; } }; } },
+            { name: 'GRAVITY WELL', category: 'Distortion', icon: 'magnet', create: function () { var cx = Math.floor(15 + Math.random() * 30), cy = Math.floor(15 + Math.random() * 30), pull = Math.random() > 0.3; return { color: '#fb7185', desc: "중심점 " + (pull ? "수렴" : "확산") + ".", logic: function (c) { var next = c.map(function (x) { return Object.assign({}, x, { active: false }); }); c.filter(function (p) { return p.active; }).forEach(function (p) { var nx = p.x, ny = p.y; if (pull) { if (nx < cx) nx++; else if (nx > cx) nx--; if (ny < cy) ny++; else if (ny > cy) ny--; } else { if (nx < cx) nx--; else if (nx > cx) nx++; if (ny < cy) ny--; else if (ny > cy) ny++; } nx = (nx + GRID_SIZE) % GRID_SIZE; ny = (ny + GRID_SIZE) % GRID_SIZE; next[ny * GRID_SIZE + nx] = Object.assign({}, p, { x: nx, y: ny, active: true }); }); return next; } }; } },
+            { name: 'GLITCH TEAR', category: 'Distortion', icon: 'scissors', create: function () { var sY = Math.floor(Math.random() * GRID_SIZE), o = Math.floor(Math.random() * 20) - 10; return { color: '#ffffff', desc: "그리드를 수평으로 찢어 오프셋 시킵니다.", logic: function (c) { return c.map(function (x) { return (x.y > sY) ? Object.assign({}, x, { x: (x.x + o + GRID_SIZE) % GRID_SIZE }) : x; }); } }; } },
+            { name: 'LIQUID WAVE', category: 'Distortion', icon: 'waves', create: function () { var a = 3 + Math.random() * 6; return { color: '#00f2ff', desc: "물결 왜곡으로 유동적인 질감을 만듭니다.", logic: function (c) { return c.map(function (x) { return Object.assign({}, x, { x: (x.x + Math.floor(Math.sin(x.y * 0.2) * a) + GRID_SIZE) % GRID_SIZE }); }); } }; } },
+            { name: 'FLOW DISTORT', category: 'Distortion', icon: 'zap', create: function () { var st = 2 + Math.random() * 6; var fr = 0.1 + Math.random() * 0.2; return { color: '#00f2ff', desc: "유체역학 필드 공간 왜곡.", logic: function (c) { return c.map(function (p) { var nx = (p.x + Math.floor(Math.sin(p.y * fr) * st) + GRID_SIZE) % GRID_SIZE; var ny = (p.y + Math.floor(Math.cos(p.x * fr) * st) + GRID_SIZE) % GRID_SIZE; return Object.assign({}, p, { x: nx, y: ny }); }); } }; } },
+            { name: 'DIFFUSION', category: 'Distortion', icon: 'expand', create: function () { return { color: '#a78bfa', desc: "주변 빈 공간으로 색상이 번져나갑니다.", logic: function (c) { var next = c.slice(); c.filter(function (p) { return p.active; }).forEach(function (p) { if (Math.random() > 0.6) { var nx = (p.x + (Math.floor(Math.random() * 3) - 1) + GRID_SIZE) % GRID_SIZE, ny = (p.y + (Math.floor(Math.random() * 3) - 1) + GRID_SIZE) % GRID_SIZE; next[ny * GRID_SIZE + nx] = Object.assign({}, p, { x: nx, y: ny, active: true }); } }); return next; } }; } },
+
+            // Category: Alignment/Data (2)
+            { name: 'PALETTE SWAP', category: 'Alignment', icon: 'shuffle', create: function () { return { color: '#fff', desc: "픽셀 색상 팔레트 내 교체.", logic: function (c) { if (allRandomMode || colorPool.length < 2) return c.map(function (x) { return x.active ? Object.assign({}, x, { color: getStudioColor() }) : x; }); var m = new Map(); var sh = colorPool.slice().sort(function () { return Math.random() - 0.5; }); colorPool.forEach(function (col, i) { m.set(col, sh[i]); }); return c.map(function (x) { return x.active ? Object.assign({}, x, { color: m.get(x.color) || x.color }) : x; }); } }; } },
+            { name: 'LUMA SORT', category: 'Alignment', icon: 'list-ordered', create: function () { return { color: '#f8fafc', desc: "명도 데이터 순 물리 정렬.", logic: function (c) { var acs = c.filter(function (x) { return x.active; }).sort(function (a, b) { var getL = function (col) { var dc = document.createElement('canvas').getContext('2d'); dc.fillStyle = col; var m = dc.fillStyle.match(/\d+/g); return m ? (m[0] * 0.3 + m[1] * 0.59 + m[2] * 0.11) : 0; }; return getL(b.color) - getL(a.color); }); var next = c.map(function (x) { return Object.assign({}, x, { active: false }); }); acs.forEach(function (ac, i) { if (i < TOTAL) next[i] = Object.assign({}, next[i], { active: true, color: ac.color }); }); return next; } }; } },
+
+            // Category: Reflection (4)
+            { name: 'RANDOM MIRROR', category: 'Reflection', icon: 'combine', create: function () { var axis = Math.random() > 0.5 ? 'X' : 'Y'; var side = Math.random() > 0.5 ? 0 : 1; return { color: '#ec4899', desc: "무작위 축 대칭 반사를 적용.", logic: function (c) { var next = c.slice(); var half = GRID_SIZE / 2; if (axis === 'X') { for (var y = 0; y < GRID_SIZE; y++) for (var x = 0; x < half; x++) { var s = side ? c[y * GRID_SIZE + ((GRID_SIZE - 1) - x)] : c[y * GRID_SIZE + x], tx = side ? x : (GRID_SIZE - 1) - x; next[y * GRID_SIZE + tx] = Object.assign({}, s, { x: tx, y: y }); } } else { for (var x = 0; x < GRID_SIZE; x++) for (var y = 0; y < half; y++) { var s = side ? c[((GRID_SIZE - 1) - y) * GRID_SIZE + x] : c[y * GRID_SIZE + x], ty = side ? y : (GRID_SIZE - 1) - y; next[ty * GRID_SIZE + x] = Object.assign({}, s, { x: x, y: ty }); } } return next; } }; } },
+            { name: 'QUADRANT SYNC', category: 'Reflection', icon: 'layout-grid', create: function () { var srcQ = Math.floor(Math.random() * 4); var half = GRID_SIZE / 2; return { color: '#00f2ff', desc: "사분면 무작위 복제로 패턴화.", logic: function (c) { var next = c.slice(); var xO = (srcQ % 2) * half, yO = Math.floor(srcQ / 2) * half; for (var y = 0; y < half; y++) for (var x = 0; x < half; x++) { var s = c[(y + yO) * GRID_SIZE + (x + xO)]; for (var i = 0; i < 4; i++) { var tx = x + (i % 2) * half, ty = y + Math.floor(i / 2) * half; next[ty * GRID_SIZE + tx] = Object.assign({}, s, { x: tx, y: ty }); } } return next; } }; } },
+            { name: 'ANGULAR SYM', category: 'Reflection', icon: 'refresh-ccw', create: function () { return { color: '#fbbf24', desc: "4방향 회전 대칭을 완성합니다.", logic: function (c) { var next = c.slice(); var limit = GRID_SIZE / 2; for (var y = 0; y < limit; y++) for (var x = 0; x < limit; x++) { var s = c[y * GRID_SIZE + x]; if (!s.active) continue;[[(GRID_SIZE - 1) - x, y], [x, (GRID_SIZE - 1) - y], [(GRID_SIZE - 1) - x, (GRID_SIZE - 1) - y]].forEach(function (sym) { var sx = sym[0], sy = sym[1]; next[sy * GRID_SIZE + sx] = Object.assign({}, s, { x: sx, y: sy, active: true }); }); } return next; } }; } },
+            { name: 'KALEIDOSCOPE N', category: 'Reflection', icon: 'snowflake', create: function () { var n = [6, 8, 12, 16][Math.floor(Math.random() * 4)]; return { color: '#fbbf24', desc: n + "분할 무작위 만화경 대칭 적용.", logic: function (c) { var next = c.slice(); var center = GRID_SIZE / 2 - 0.5; var angleStep = (Math.PI * 2) / n; c.forEach(function (p) { if (!p.active) return; var dx = p.x - center, dy = p.y - center, r = Math.sqrt(dx * dx + dy * dy), startAngle = Math.atan2(dy, dx); for (var i = 1; i < n; i++) { var curAngle = startAngle + i * angleStep; var nx = Math.round(center + r * Math.cos(curAngle)), ny = Math.round(center + r * Math.sin(curAngle)); if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) next[ny * GRID_SIZE + nx] = Object.assign({}, p, { x: nx, y: ny }); } }); return next; } }; } }
+        ];
+
         function startStudio(allR) {
             allRandomMode = allR; isChallengeMode = document.getElementById('game-mode-toggle').checked;
+            if (isChallengeMode) { pickDeck(); showDeckReveal(); } else { finalizeStart(); }
+        }
+
+        function pickDeck() {
+            var gP = CARD_TEMPLATES.filter(function (c) { return c.category === 'Generation'; });
+            var dP = CARD_TEMPLATES.filter(function (c) { return c.category === 'Distortion'; });
+            var aP = CARD_TEMPLATES.filter(function (c) { return c.category === 'Alignment'; });
+            var rP = CARD_TEMPLATES.filter(function (c) { return c.category === 'Reflection'; });
+            var shuf = function (arr) { return arr.slice().sort(function () { return Math.random() - 0.5; }); };
+
+            // 7-Card Deck logic: 3 Gen, 2 Dist, 1 Align, 1 Reflection
+            activeDeck = [].concat(
+                shuf(gP).slice(0, 3),
+                shuf(dP).slice(0, 2),
+                shuf(aP).slice(0, 1),
+                shuf(rP).slice(0, 1)
+            );
+        }
+
+        function showDeckReveal() {
+            var modal = document.getElementById('deck-reveal-screen');
+            var list = document.getElementById('deck-display-list');
+            list.innerHTML = '';
+            activeDeck.forEach(function (card, i) {
+                var div = document.createElement('div');
+                div.className = 'glass p-6 flex flex-col items-center reveal-anim text-center';
+                div.style.animationDelay = (i * 0.15) + "s";
+                div.innerHTML = '<div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-cyan-400 mb-4"><i data-lucide="' + card.icon + '" class="w-5 h-5"></i></div><div class="text-[8px] text-slate-500 uppercase font-black mb-1">' + card.category + '</div><div class="text-[10px] font-black text-white uppercase">' + card.name + '</div>';
+                list.appendChild(div);
+            });
+            modal.classList.remove('hidden'); lucide.createIcons();
+        }
+
+        function closeDeckReveal() { document.getElementById('deck-reveal-screen').classList.add('hidden'); finalizeStart(); }
+
+        function finalizeStart() {
             document.getElementById('setup-screen').classList.add('setup-hidden'); document.getElementById('app').classList.remove('opacity-0');
-            if (isChallengeMode) { document.getElementById('game-stats').classList.remove('hidden'); document.getElementById('mode-label').innerText = "Challenge.Mode.Active"; }
-            const cp = document.getElementById('current-palette-display'); cp.innerHTML = '';
-            if (!allRandomMode) colorPool.forEach(c => { const d = document.createElement('div'); d.className = 'w-2 h-2 rounded-full'; d.style.backgroundColor = c; cp.appendChild(d); });
+            if (isChallengeMode) {
+                document.getElementById('game-stats').classList.remove('hidden'); document.getElementById('deck-sidebar').classList.remove('hidden');
+                document.getElementById('mode-label').innerText = "Challenge.Mode.Active";
+                var deckIcons = document.getElementById('deck-icons'); deckIcons.innerHTML = '';
+                activeDeck.forEach(function (c) { var icon = document.createElement('div'); icon.className = 'w-8 h-8 glass flex items-center justify-center text-white/30 hover:text-cyan-400 transition-colors'; icon.title = c.name; icon.innerHTML = '<i data-lucide="' + c.icon + '" class="w-4 h-4"></i>'; deckIcons.appendChild(icon); });
+            }
+            if (!allRandomMode) { var cp = document.getElementById('current-palette-display'); cp.innerHTML = ''; colorPool.forEach(function (c) { var d = document.createElement('div'); d.className = 'w-2 h-2 rounded-full'; d.style.backgroundColor = c; cp.appendChild(d); }); }
             initGrid(); rerollHand(); lucide.createIcons();
         }
 
-        function getStudioColor() { return allRandomMode ? `hsl(${Math.floor(Math.random() * 360)}, 75%, 60%)` : colorPool[Math.floor(Math.random() * colorPool.length)]; }
-        function mixColors(c1, c2) {
-            if (!c1 || c1 === '#000' || c1 === 'rgb(0, 0, 0)') return c2;
-            const d = document.createElement('canvas').getContext('2d'); d.fillStyle = c1; const r1 = d.fillStyle.match(/\d+/g).map(Number);
-            d.fillStyle = c2; const r2 = d.fillStyle.match(/\d+/g).map(Number);
-            return `rgb(${Math.round((r1[0] + r2[0] * 2) / 3)}, ${Math.round((r1[1] + r2[1] * 2) / 3)}, ${Math.round((r1[2] + r2[2] * 2) / 3)})`;
-        }
-        function toggleBlendMode() { isBlendMode = !isBlendMode; document.getElementById('blend-status').innerText = isBlendMode ? 'ON' : 'OFF'; document.getElementById('blend-toggle').classList.toggle('btn-active'); renderGrid(); }
-
-        const CARD_TEMPLATES = [
-            {
-                name: 'STEP SAMPLER', type: 'Logic', icon: 'hash', create: () => {
-                    const col = getStudioColor(); const n = Math.floor(Math.random() * 10) + 5;
-                    return { color: col, desc: `${n}번째 데이터마다 정밀하게 픽셀을 배치합니다.`, logic: (c) => c.map((x, i) => i % n === 0 ? { ...x, active: true, color: col } : x) };
-                }
-            },
-            {
-                name: 'MODULO MESH', type: 'Logic', icon: 'grid', create: () => {
-                    const col = getStudioColor(); const m = Math.floor(Math.random() * 6) + 6;
-                    return { color: col, desc: `${m}픽셀 주기로 기하학적 격자망을 형성합니다.`, logic: (c) => c.map(x => (x.x % m === 0 || x.y % m === 0) ? { ...x, active: true, color: col } : x) };
-                }
-            },
-            {
-                name: 'CONCENTRIC RINGS', type: 'Gen', icon: 'target', create: () => {
-                    const col = getStudioColor(); const gap = 4 + Math.random() * 6;
-                    return { color: col, desc: `${gap.toFixed(0)}픽셀 주기의 동심원 패턴을 중첩합니다.`, logic: (c) => c.map(x => (Math.floor(Math.sqrt((x.x - (GRID_SIZE / 2 - 0.5)) ** 2 + (x.y - (GRID_SIZE / 2 - 0.5)) ** 2)) % Math.floor(gap) === 0) ? { ...x, active: true, color: col } : x) };
-                }
-            },
-            {
-                name: 'STOCHASTIC NOISE', type: 'Gen', icon: 'sparkles', create: () => {
-                    const col = getStudioColor(); const density = 0.05 + Math.random() * 0.15;
-                    return { color: col, desc: `${(density * 100).toFixed(0)}% 확률로 픽셀 노이즈를 살포합니다.`, logic: (c) => c.map(x => Math.random() < density ? { ...x, active: true, color: col } : x) };
-                }
-            },
-            {
-                name: 'PALETTE SWAP', type: 'Data', icon: 'shuffle', create: () => ({
-                    color: '#fff', desc: `픽셀들의 색상을 팔레트 내 다른 색으로 무작위 교체합니다.`, logic: (c) => {
-                        if (allRandomMode || colorPool.length < 2) return c.map(x => x.active ? { ...x, color: getStudioColor() } : x);
-                        const map = new Map(); const shuffled = [...colorPool].sort(() => Math.random() - 0.5);
-                        colorPool.forEach((col, i) => map.set(col, shuffled[i]));
-                        return c.map(x => x.active ? { ...x, color: map.get(x.color) || x.color } : x);
-                    }
-                })
-            },
-            {
-                name: 'ANGULAR SYM', type: 'Spatial', icon: 'refresh-ccw', create: () => ({
-                    color: '#fbbf24', desc: `중심 기반 4방향 회전 대칭 조형을 완성합니다.`, logic: (c) => {
-                        const next = [...c]; const limit = GRID_SIZE / 2;
-                        for (let y = 0; y < limit; y++) for (let x = 0; x < limit; x++) {
-                            const s = c[y * GRID_SIZE + x]; if (!s.active) continue;
-                            [[(GRID_SIZE - 1) - x, y], [x, (GRID_SIZE - 1) - y], [(GRID_SIZE - 1) - x, (GRID_SIZE - 1) - y]].forEach(([sx, sy]) => { next[sy * GRID_SIZE + sx] = { ...s, x: sx, y: sy, active: true }; });
-                        } return next;
-                    }
-                })
-            },
-            {
-                name: 'KALEIDOSCOPE N', type: 'Spatial', icon: 'snowflake', create: () => {
-                    const n = [6, 8, 12, 16][Math.floor(Math.random() * 4)];
-                    return {
-                        color: '#fbbf24', desc: `${n}분할 무작위 만화경 대칭으로 기하학적 미학을 극대화합니다.`, logic: (c) => {
-                            const next = [...c]; const center = GRID_SIZE / 2 - 0.5;
-                            const angleStep = (Math.PI * 2) / n;
-                            c.forEach(p => {
-                                if (!p.active) return;
-                                const dx = p.x - center, dy = p.y - center;
-                                const r = Math.sqrt(dx * dx + dy * dy);
-                                const startAngle = Math.atan2(dy, dx);
-                                for (let i = 1; i < n; i++) {
-                                    const curAngle = startAngle + i * angleStep;
-                                    const nx = Math.round(center + r * Math.cos(curAngle)), ny = Math.round(center + r * Math.sin(curAngle));
-                                    if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) next[ny * GRID_SIZE + nx] = { ...p, x: nx, y: ny };
-                                }
-                            }); return next;
-                        }
-                    };
-                }
-            },
-            {
-                name: 'RANDOM MIRROR', type: 'Spatial', icon: 'combine', create: () => {
-                    const axis = Math.random() > 0.5 ? 'X' : 'Y'; const side = Math.random() > 0.5 ? 0 : 1;
-                    return {
-                        color: '#ec4899', desc: `무작위 축(${axis})을 기준으로 대칭 반사 시킵니다.`, logic: (c) => {
-                            const next = [...c]; const half = GRID_SIZE / 2;
-                            if (axis === 'X') { for (let y = 0; y < GRID_SIZE; y++) for (let x = 0; x < half; x++) { const s = side ? c[y * GRID_SIZE + ((GRID_SIZE - 1) - x)] : c[y * GRID_SIZE + x], tx = side ? x : (GRID_SIZE - 1) - x; next[y * GRID_SIZE + tx] = { ...s, x: tx, y: y }; } }
-                            else { for (let x = 0; x < GRID_SIZE; x++) for (let y = 0; y < half; y++) { const s = side ? c[((GRID_SIZE - 1) - y) * GRID_SIZE + x] : c[y * GRID_SIZE + x], ty = side ? y : (GRID_SIZE - 1) - y; next[ty * GRID_SIZE + x] = { ...s, x: x, y: ty }; } }
-                            return next;
-                        }
-                    };
-                }
-            },
-            {
-                name: 'QUADRANT SYNC', type: 'Spatial', icon: 'layout-grid', create: () => {
-                    const srcQ = Math.floor(Math.random() * 4); const half = GRID_SIZE / 2;
-                    return {
-                        color: '#00f2ff', desc: `무작위 사분면(${srcQ + 1})을 전체 영역으로 패턴 복제합니다.`, logic: (c) => {
-                            const next = [...c]; const xO = (srcQ % 2) * half, yO = Math.floor(srcQ / 2) * half;
-                            for (let y = 0; y < half; y++) for (let x = 0; x < half; x++) {
-                                const s = c[(y + yO) * GRID_SIZE + (x + xO)]; for (let i = 0; i < 4; i++) { const tx = x + (i % 2) * half, ty = y + Math.floor(i / 2) * half; next[ty * GRID_SIZE + tx] = { ...s, x: tx, y: ty }; }
-                            } return next;
-                        }
-                    };
-                }
-            },
-            {
-                name: 'CIRCULAR CORE', type: 'Gen', icon: 'circle', create: () => {
-                    const col = getStudioColor(); const r = 8 + Math.random() * 18, cx = 15 + Math.random() * 30, cy = 15 + Math.random() * 30;
-                    return { color: col, desc: `반지름 ${r.toFixed(0)}의 원형 조형 데이터를 주입합니다.`, logic: (c) => c.map(x => (Math.sqrt((x.x - cx) ** 2 + (x.y - cy) ** 2) < r) ? { ...x, active: true, color: col } : x) };
-                }
-            },
-            {
-                name: 'TRIANGLE MESH', type: 'Gen', icon: 'triangle', create: () => {
-                    const col = getStudioColor(); const pts = Array.from({ length: 3 }, () => ({ x: Math.random() * GRID_SIZE, y: Math.random() * GRID_SIZE }));
-                    return {
-                        color: col, desc: `세 점을 잇는 삼각형 폴리곤 영역을 채색합니다.`, logic: (c) => {
-                            const area = 0.5 * (-pts[1].y * pts[2].x + pts[0].y * (-pts[1].x + pts[2].x) + pts[0].x * (pts[1].y - pts[2].y) + pts[1].x * pts[2].y);
-                            return c.map(pt => {
-                                const s = 1 / (2 * area) * (pts[0].y * pts[2].x - pts[0].x * pts[2].y + (pts[2].y - pts[0].y) * pt.x + (pts[0].x - pts[2].x) * pt.y), t = 1 / (2 * area) * (pts[0].x * pts[1].y - pts[0].y * pts[1].x + (pts[0].y - pts[1].y) * pt.x + (pts[1].x - pts[0].x) * pt.y);
-                                return (s > 0 && t > 0 && 1 - s - t > 0) ? { ...pt, active: true, color: col } : pt;
-                            });
-                        }
-                    };
-                }
-            },
-            {
-                name: 'VECTOR DRIFT', type: 'Gravity', icon: 'wind', create: () => {
-                    const d = ['UP', 'DOWN', 'LEFT', 'RIGHT'][Math.floor(Math.random() * 4)];
-                    return {
-                        color: '#10b981', desc: `${d} 방향 가속도로 데이터를 쏠리게 유도합니다.`, logic: (c) => {
-                            const next = c.map(x => ({ ...x, active: false }));
-                            if (d === 'DOWN') { for (let x = 0; x < GRID_SIZE; x++) { const acs = c.filter(p => p.x === x && p.active); acs.forEach((a, i) => { const ty = (GRID_SIZE - 1) - i; next[ty * GRID_SIZE + x] = { ...a, y: ty, active: true }; }); } }
-                            else if (d === 'UP') { for (let x = 0; x < GRID_SIZE; x++) { const acs = c.filter(p => p.x === x && p.active); acs.forEach((a, i) => { const ty = i; next[ty * GRID_SIZE + x] = { ...a, y: ty, active: true }; }); } }
-                            else if (d === 'RIGHT') { for (let y = 0; y < GRID_SIZE; y++) { const acs = c.filter(p => p.y === y && p.active); acs.forEach((a, i) => { const tx = (GRID_SIZE - 1) - i; next[y * GRID_SIZE + tx] = { ...a, x: tx, active: true }; }); } }
-                            else { for (let y = 0; y < GRID_SIZE; y++) { const acs = c.filter(p => p.y === y && p.active); acs.forEach((a, i) => { const tx = i; next[y * GRID_SIZE + tx] = { ...a, x: tx, active: true }; }); } }
-                            return next;
-                        }
-                    };
-                }
-            },
-            {
-                name: 'GRAVITY WELL', type: 'Gravity', icon: 'magnet', create: () => {
-                    const cx = Math.floor(15 + Math.random() * 30), cy = Math.floor(15 + Math.random() * 30), pull = Math.random() > 0.3;
-                    return {
-                        color: '#fb7185', desc: `임의의 중심점(${cx},${cy})으로 데이터를 ${pull ? '당깁니다' : '밉니다'}.`, logic: (c) => {
-                            const next = c.map(x => ({ ...x, active: false }));
-                            c.filter(p => p.active).forEach(p => {
-                                let nx = p.x, ny = p.y;
-                                if (pull) { if (nx < cx) nx++; else if (nx > cx) nx--; if (ny < cy) ny++; else if (ny > cy) ny--; }
-                                else { if (nx < cx) nx--; else if (nx > cx) nx++; if (ny < cy) ny--; else if (ny > cy) ny++; }
-                                nx = (nx + GRID_SIZE) % GRID_SIZE; ny = (ny + GRID_SIZE) % GRID_SIZE; next[ny * GRID_SIZE + nx] = { ...p, x: nx, y: ny, active: true };
-                            }); return next;
-                        }
-                    };
-                }
-            },
-            {
-                name: 'LIFE STEP', type: 'Life', icon: 'dna', create: () => ({
-                    color: '#8b5cf6', desc: `생태계 진화 규칙을 적용하여 새로운 세대를 낳습니다.`, logic: (c) => c.map((x, i) => {
-                        let n = 0, colors = []; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (dx === 0 && dy === 0) continue; const nx = (x.x + dx + GRID_SIZE) % GRID_SIZE, ny = (x.y + dy + GRID_SIZE) % GRID_SIZE, nb = c[ny * GRID_SIZE + nx]; if (nb.active) { n++; colors.push(nb.color); } }
-                        const live = x.active ? (n === 2 || n === 3) : (n === 3);
-                        let nCol = x.color; if (!x.active && live && colors.length > 0) nCol = colors[Math.floor(Math.random() * colors.length)];
-                        return { ...x, active: live, color: nCol };
-                    })
-                })
-            },
-            {
-                name: 'DIFFUSION', type: 'Warp', icon: 'expand', create: () => ({
-                    color: '#a78bfa', desc: `활성 픽셀이 인접한 공간으로 유기적으로 번져나갑니다.`, logic: (c) => {
-                        const next = [...c];
-                        c.filter(p => p.active).forEach(p => {
-                            if (Math.random() > 0.6) {
-                                const nx = (p.x + (Math.floor(Math.random() * 3) - 1) + GRID_SIZE) % GRID_SIZE, ny = (p.y + (Math.floor(Math.random() * 3) - 1) + GRID_SIZE) % GRID_SIZE;
-                                next[ny * GRID_SIZE + nx] = { ...p, x: nx, y: ny, active: true };
-                            }
-                        });
-                        return next;
-                    }
-                })
-            },
-            {
-                name: 'GLITCH TEAR', type: 'Warp', icon: 'scissors', create: () => {
-                    const sY = Math.floor(Math.random() * GRID_SIZE), o = Math.floor(Math.random() * 14) - 7;
-                    return { color: '#ffffff', desc: `그리드 단면을 잘라 수평으로 오프셋 시킵니다.`, logic: (c) => c.map(x => (x.y > sY) ? { ...x, x: (x.x + o + GRID_SIZE) % GRID_SIZE } : x) };
-                }
-            },
-            {
-                name: 'LIQUID WAVE', type: 'Warp', icon: 'waves', create: () => {
-                    const a = 3 + Math.random() * 6;
-                    return { color: '#00f2ff', desc: `사인 파동 왜곡으로 유동적인 질감을 만듭니다.`, logic: (c) => c.map(x => ({ ...x, x: (x.x + Math.floor(Math.sin(x.y * 0.2) * a) + GRID_SIZE) % GRID_SIZE })) };
-                }
-            },
-            {
-                name: 'LUMA SORT', type: 'Data', icon: 'list-ordered', create: () => ({
-                    color: '#f8fafc', desc: `명도 데이터 순으로 물리 정렬을 수행합니다.`, logic: (c) => {
-                        const actives = c.filter(x => x.active).sort((a, b) => {
-                            const getL = (col) => { const dc = document.createElement('canvas').getContext('2d'); dc.fillStyle = col; const m = dc.fillStyle.match(/\d+/g); return m ? (m[0] * 0.3 + m[1] * 0.59 + m[2] * 0.11) : 0; };
-                            return getL(b.color) - getL(a.color);
-                        });
-                        const next = c.map(x => ({ ...x, active: false })); actives.forEach((ac, i) => { if (i < TOTAL) next[i] = { ...next[i], active: true, color: ac.color }; });
-                        return next;
-                    }
-                })
-            }
-        ];
-
-        function initGrid() { cells = []; for (let y = 0; y < GRID_SIZE; y++) for (let x = 0; x < GRID_SIZE; x++) cells.push({ x, y, active: false, color: '#000' }); renderGrid(); }
+        function initGrid() { cells = []; for (var y = 0; y < GRID_SIZE; y++) for (var x = 0; x < GRID_SIZE; x++) cells.push({ x: x, y: y, active: false, color: '#000' }); renderGrid(); }
         function renderGrid() {
-            const el = document.getElementById('grid'); el.innerHTML = ''; el.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
-            const s = Math.min(window.innerWidth * 0.92, 650); el.style.width = el.style.height = `${s}px`;
-            const f = document.createDocumentFragment();
-            cells.forEach(c => { const d = document.createElement('div'); d.className = 'pixel'; if (c.active) { d.style.backgroundColor = c.color; if (isBlendMode) d.style.opacity = "0.8"; } else d.style.backgroundColor = 'transparent'; f.appendChild(d); });
-            el.appendChild(f);
+            var el = document.getElementById('grid'); el.innerHTML = ''; el.style.gridTemplateColumns = "repeat(" + GRID_SIZE + ", 1fr)";
+            var s = Math.min(window.innerWidth * 0.92, 650); el.style.width = el.style.height = s + "px";
+            var frag = document.createDocumentFragment();
+            cells.forEach(function (c) { var d = document.createElement('div'); d.className = 'pixel'; if (c.active) { d.style.backgroundColor = c.color; if (isBlendMode) d.style.opacity = "0.8"; } else d.style.backgroundColor = 'transparent'; frag.appendChild(d); });
+            el.appendChild(frag);
         }
 
         function rerollHand() {
             if (isChallengeMode && remainingRerolls <= 0) return;
             if (isChallengeMode) remainingRerolls--;
             updateGameStats();
-            const h = document.getElementById('hand'); h.innerHTML = '';
-            for (let i = 0; i < 4; i++) {
-                const t = CARD_TEMPLATES[Math.floor(Math.random() * CARD_TEMPLATES.length)];
-                const inst = t.create(); const card = { ...t, ...inst, id: Math.random() };
-                const btn = document.createElement('button'); btn.className = 'group relative flex items-center gap-4 p-4 glass hover:bg-white/5 transition-all text-left active:translate-y-1 rounded-sm overflow-hidden';
-                btn.innerHTML = `<div class="w-10 h-10 rounded-sm flex items-center justify-center text-black shadow-lg group-hover:scale-110 transition-transform" style="background-color: ${card.color}"><i data-lucide="${card.icon}" class="w-5 h-5"></i></div><div class="flex-1 overflow-hidden"><div class="flex justify-between items-center mb-0.5"><span class="text-[8px] text-slate-600 uppercase font-black">${card.type}</span><h3 class="text-[11px] font-black text-white group-hover:text-cyan-400 uppercase truncate">${card.name}</h3></div><p class="text-[9px] text-slate-500 leading-tight truncate italic">${card.desc}</p></div><div class="absolute right-0 h-full w-1 opacity-0 group-hover:opacity-100 transition-opacity" style="background-color: ${card.color}"></div>`;
-                btn.onclick = () => playCard(card); h.appendChild(btn);
+            var h = document.getElementById('hand'); h.innerHTML = '';
+            var pool = isChallengeMode ? activeDeck : CARD_TEMPLATES;
+            for (var i = 0; i < 4; i++) {
+                var t = pool[Math.floor(Math.random() * pool.length)];
+                var inst = t.create(); var card = Object.assign({}, t, inst, { id: Math.random() });
+                var btn = document.createElement('button'); btn.className = 'group relative flex items-center gap-4 p-4 glass hover:bg-white/5 transition-all text-left active:translate-y-1 rounded-sm overflow-hidden';
+                btn.innerHTML = '<div class="w-10 h-10 rounded-sm flex items-center justify-center text-black shadow-lg group-hover:scale-110 transition-transform" style="background-color: ' + card.color + '"><i data-lucide="' + card.icon + '" class="w-5 h-5"></i></div><div class="flex-1 overflow-hidden"><div class="flex justify-between items-center mb-0.5"><span class="text-[8px] text-slate-600 uppercase font-black">' + card.category + '</span><h3 class="text-[11px] font-black text-white group-hover:text-cyan-400 uppercase truncate">' + card.name + '</h3></div><p class="text-[9px] text-slate-500 leading-tight truncate italic">' + card.desc + '</p></div><div class="absolute right-0 h-full w-1 opacity-0 group-hover:opacity-100 transition-opacity" style="background-color: ' + card.color + '"></div>';
+                btn.onclick = (function (c_obj) { return function () { playCard(c_obj); }; })(card);
+                h.appendChild(btn);
             }
             lucide.createIcons();
         }
 
         function updateGameStats() {
             if (!isChallengeMode) return;
-            document.getElementById('turn-stat').innerText = remainingTurns;
-            document.getElementById('reroll-stat').innerText = remainingRerolls;
-            document.getElementById('reroll-btn').disabled = remainingRerolls <= 0;
+            document.getElementById('turn-stat').innerText = remainingTurns; document.getElementById('reroll-stat').innerText = remainingRerolls;
+            document.getElementById('reroll-stat').style.color = remainingRerolls === 0 ? '#ef4444' : '#00f2ff';
+            document.getElementById('reroll-btn').disabled = (remainingRerolls <= 0);
             if (remainingTurns <= 0) document.getElementById('finish-overlay').classList.remove('opacity-0', 'pointer-events-none');
         }
 
         async function playCard(card) {
             if (isChallengeMode && remainingTurns <= 0) return;
-            const o = document.getElementById('compiler-overlay'); const w = document.getElementById('canvas-wrapper');
+            var o = document.getElementById('compiler-overlay'); var w = document.getElementById('canvas-wrapper');
             o.classList.remove('opacity-0', 'pointer-events-none'); w.classList.add('compiling-active');
-            await new Promise(r => setTimeout(r, 450));
-            const nR = card.logic([...cells]);
-            if (isBlendMode) cells = nR.map((nC, i) => { const oC = cells[i]; if (oC.active && nC.active && oC.color !== nC.color) return { ...nC, color: mixColors(oC.color, nC.color) }; return nC; });
+            await new Promise(function (r) { setTimeout(r, 450); });
+            var nR = card.logic(cells.slice());
+            if (isBlendMode) cells = nR.map(function (nC, i) { var oC = cells[i]; if (oC.active && nC.active && oC.color !== nC.color) return Object.assign({}, nC, { color: mixColors(oC.color, nC.color) }); return nC; });
             else cells = nR;
             turnCount++;
             if (isChallengeMode) { remainingTurns--; remainingRerolls = 2; }
-            const l = document.getElementById('history-log'); if (l.querySelector('div.italic')) l.innerHTML = '';
-            const e = document.createElement('div'); e.className = 'flex items-center gap-3 border-b border-white/5 pb-2 animate-in';
-            e.innerHTML = `<span class="text-slate-700">[${turnCount}]</span> <span style="color: ${card.color}">${card.name}</span> <span class="ml-auto text-slate-600">DONE</span>`; l.prepend(e);
-            document.getElementById('cycle-count').innerText = `CYC: ${turnCount.toString().padStart(3, '0')}`;
+            var l = document.getElementById('history-log'); if (l.querySelector('div.italic')) l.innerHTML = '';
+            var e = document.createElement('div'); e.className = 'flex items-center gap-3 border-b border-white/5 pb-2 animate-in';
+            e.innerHTML = '<span class="text-slate-700">[' + turnCount + ']</span> <span style="color: ' + card.color + '">' + card.name + '</span> <span class="ml-auto text-slate-600">DONE</span>'; l.prepend(e);
+            document.getElementById('cycle-count').innerText = "CYC: " + turnCount.toString().padStart(3, '0');
             updateGameStats(); renderGrid(); if (remainingTurns > 0 || !isChallengeMode) rerollHand();
             o.classList.add('opacity-0', 'pointer-events-none'); w.classList.remove('compiling-active');
         }
 
         function exportImage(mode) {
-            const c = document.getElementById('export-canvas'), ctx = c.getContext('2d'), pS = 10, w = GRID_SIZE * pS, h = GRID_SIZE * pS;
-            if (mode === 'single') { c.width = w; c.height = h; drawM(ctx, cells, 0, 0, pS, 0); }
+            var canvas = document.getElementById('export-canvas'), ctx = canvas.getContext('2d'), pS = 10, w = GRID_SIZE * pS, h = GRID_SIZE * pS;
+            if (mode === 'single') { canvas.width = w; canvas.height = h; drawM(ctx, cells, 0, 0, pS, 0); }
             else {
-                c.width = w * 2; c.height = h * 2; if (mode === 'repeat') [0, w].forEach(dx => [0, h].forEach(dy => drawM(ctx, cells, dx, dy, pS, 0))); else { drawM(ctx, cells, 0, 0, pS, 0); drawM(ctx, cells, w * 2, 0, pS, 90); drawM(ctx, cells, 0, h * 2, pS, 270); drawM(ctx, cells, w * 2, h * 2, pS, 180); }
+                canvas.width = w * 2; canvas.height = h * 2;
+                if (mode === 'repeat') { [0, w].forEach(function (dx) { [0, h].forEach(function (dy) { drawM(ctx, cells, dx, dy, pS, 0); }); }); }
+                else { drawM(ctx, cells, 0, 0, pS, 0); drawM(ctx, cells, w, 0, pS, 90); drawM(ctx, cells, 0, h, pS, 270); drawM(ctx, cells, w, h, pS, 180); }
             }
-            const l = document.createElement('a'); l.download = `Alchemy60_${mode}_${Date.now()}.png`; l.href = c.toDataURL('image/png'); l.click();
+            var l = document.createElement('a'); l.download = "Alchemy60_" + mode + "_" + Date.now() + ".png"; l.href = canvas.toDataURL('image/png'); l.click();
         }
-        function drawM(ctx, d, ox, oy, ps, rot) { ctx.save(); ctx.translate(ox, oy); if (rot !== 0) ctx.rotate((rot * Math.PI) / 180); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, GRID_SIZE * ps, GRID_SIZE * ps); d.forEach(c => { if (c.active) { ctx.fillStyle = c.color; if (isBlendMode) ctx.globalAlpha = 0.8; ctx.fillRect(c.x * ps, c.y * ps, ps, ps); ctx.globalAlpha = 1.0; } }); ctx.restore(); }
+        function drawM(ctx, d, ox, oy, ps, rot) {
+            ctx.save(); ctx.translate(ox, oy);
+            if (rot !== 0) { ctx.translate((GRID_SIZE * ps) / 2, (GRID_SIZE * ps) / 2); ctx.rotate((rot * Math.PI) / 180); ctx.translate(-(GRID_SIZE * ps) / 2, -(GRID_SIZE * ps) / 2); }
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, GRID_SIZE * ps, GRID_SIZE * ps); d.forEach(function (c) { if (c.active) { ctx.fillStyle = c.color; if (isBlendMode) ctx.globalAlpha = 0.8; ctx.fillRect(c.x * ps, c.y * ps, ps, ps); ctx.globalAlpha = 1.0; } });
+            ctx.restore();
+        }
+
+        function getStudioColor() { return allRandomMode ? "hsl(" + Math.floor(Math.random() * 360) + ", 75%, 60%)" : colorPool[Math.floor(Math.random() * colorPool.length)]; }
+        function mixColors(c1, c2) {
+            if (!c1 || c1 === '#000' || c1 === 'rgb(0, 0, 0)') return c2;
+            var d = document.createElement('canvas').getContext('2d'); d.fillStyle = c1; var r1 = d.fillStyle.match(/\d+/g).map(Number);
+            d.fillStyle = c2; var r2 = d.fillStyle.match(/\d+/g).map(Number);
+            return "rgb(" + Math.round((r1[0] + r2[0] * 2) / 3) + "," + Math.round((r1[1] + r2[1] * 2) / 3) + "," + Math.round((r1[2] + r2[2] * 2) / 3) + ")";
+        }
 
         window.addEventListener('resize', renderGrid);
-        window.onload = () => { initColorSliders(); updatePoolUI(); lucide.createIcons(); };
+        window.onload = function () { initColorSliders(); updatePoolUI(); lucide.createIcons(); };
     </script>
 
 </body>
