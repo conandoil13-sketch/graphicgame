@@ -85,7 +85,6 @@
             border-color: var(--accent-color) !important;
         }
 
-        /* Responsive Setup Screen */
         .setup-screen {
             position: fixed;
             inset: 0;
@@ -116,11 +115,35 @@
             border: 2px solid rgba(255, 255, 255, 0.1);
             transition: all 0.2s;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
-        .color-slot:hover {
-            border-color: white;
+        .color-slot:not(.empty):hover {
+            border-color: #ef4444;
             transform: translateY(-2px);
+        }
+
+        .color-slot.empty {
+            background: rgba(255, 255, 255, 0.05);
+            border-style: dashed;
+            cursor: default;
+        }
+
+        .slot-remove-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(239, 68, 68, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            color: white;
+        }
+
+        .color-slot:not(.empty):hover .slot-remove-overlay {
+            opacity: 1;
         }
 
         input[type=range] {
@@ -241,7 +264,6 @@
                     Configure Studio</h1>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-stretch">
-                    <!-- Color Control Area -->
                     <div class="lg:col-span-7 glass p-6 md:p-8 space-y-8 flex flex-col justify-center">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                             <div class="space-y-6">
@@ -300,10 +322,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Mode & Palette Area -->
                     <div class="lg:col-span-5 glass p-6 md:p-8 flex flex-col">
                         <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
-                            <h3 class="text-xs font-bold text-white uppercase tracking-widest">Selected Components</h3>
+                            <h3 class="text-xs font-bold text-white uppercase tracking-widest">Components (Click to
+                                remove)</h3>
                             <span id="pool-count" class="text-cyan-400 font-black">0/10</span>
                         </div>
                         <div id="selected-pool" class="grid grid-cols-5 gap-3 mb-8 min-h-[100px]"></div>
@@ -345,8 +367,8 @@
                                     class="w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed transition-all">Launch
                                     Lab</button>
                                 <button onclick="startStudio(true)"
-                                    class="w-full py-3 text-[9px] text-white/30 hover:text-white transition-all uppercase tracking-[0.4em] font-bold">All
-                                    Random Mode</button>
+                                    class="w-full py-3 text-[9px] text-white/30 hover:text-white transition-all uppercase tracking-[0.4em] font-bold">Absolute
+                                    Random Hex Mode</button>
                             </div>
                         </div>
                     </div>
@@ -390,8 +412,8 @@
                 <h1 class="text-4xl md:text-7xl font-black italic tracking-tighter text-white uppercase leading-none">
                     Grid Alchemist</h1>
                 <p id="palette-indicator"
-                    class="text-[11px] text-slate-500 mt-4 font-bold tracking-[0.2em] uppercase italic">>>> High-Res
-                    60x60 Grid Active</p>
+                    class="text-[11px] text-slate-500 mt-4 font-bold tracking-[0.2em] uppercase italic">>>>
+                    High-Resolution 60x60 Grid Active</p>
             </div>
             <div class="flex flex-wrap justify-center gap-3">
                 <button id="blend-toggle" onclick="toggleBlendMode()"
@@ -404,7 +426,7 @@
                         <i data-lucide="download" class="w-4 h-4"></i> Export
                     </button>
                     <div
-                        class="dropdown-menu absolute hidden right-0 mt-2 w-56 glass z-[100] shadow-2xl overflow-hidden">
+                        class="dropdown-menu absolute hidden right-0 mt-2 w-64 glass z-[100] shadow-2xl overflow-hidden">
                         <button onclick="exportImage('single')"
                             class="w-full text-left px-4 py-3 text-[10px] font-bold hover:bg-white/10 border-b border-white/5 text-slate-300">Original
                             (1x1)</button>
@@ -414,16 +436,21 @@
                         <button onclick="exportImage('repeat')"
                             class="w-full text-left px-4 py-3 text-[10px] font-bold hover:bg-white/10 border-b border-white/5 text-slate-300">Infinite
                             Tile (2x2)</button>
+                        <button onclick="exportImage('radial4')"
+                            class="w-full text-left px-4 py-3 text-[10px] font-bold hover:bg-white/10 border-b border-white/5 text-rose-400">Super
+                            Mandala (4x4)</button>
+                        <button onclick="exportImage('repeat4')"
+                            class="w-full text-left px-4 py-3 text-[10px] font-bold hover:bg-white/10 text-slate-300">Infinite
+                            Tile (4x4)</button>
                     </div>
                 </div>
-                <button onclick="window.location.reload()"
+                <button onclick="resetLab()"
                     class="px-6 py-3 border border-red-500/30 text-red-500 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-red-500 hover:text-white transition-all glass">Reset
                     Lab</button>
             </div>
         </header>
 
         <main class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-12 items-start pb-24">
-            <!-- Canvas Column -->
             <div class="lg:col-span-7 xl:col-span-8 flex flex-col items-center">
                 <div id="canvas-wrapper"
                     class="relative glass p-1 canvas-glow transition-all duration-500 overflow-hidden">
@@ -440,14 +467,13 @@
                             Finalized</h2>
                         <p class="text-xs text-slate-500 uppercase tracking-widest mb-10 text-center">60x60 Ultra
                             Workpiece.</p>
-                        <button onclick="exportImage('radial')"
+                        <button onclick="exportImage('radial4')"
                             class="px-10 py-4 bg-cyan-600 text-black text-xs font-black uppercase tracking-[0.5em] hover:bg-white transition-all">Export
-                            Result</button>
+                            Artwork</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Sidebar Column -->
             <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-8 w-full">
                 <div id="game-stats" class="grid grid-cols-2 gap-4 hidden">
                     <div class="glass p-5 flex flex-col items-center">
@@ -468,10 +494,10 @@
                     <div class="absolute top-0 left-0 w-full h-1 bg-cyan-500/20"></div>
                     <h2
                         class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <i data-lucide="terminal" class="w-4 h-4"></i> Protocol_Stream.log</h2>
+                        <i data-lucide="terminal" class="w-4 h-4"></i> Session.log</h2>
                     <div id="history-log"
                         class="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-2 font-mono text-[10px]">
-                        <div class="text-slate-800 italic uppercase">Initializing Workspace...</div>
+                        <div class="text-slate-800 italic uppercase">Initializing Lab...</div>
                     </div>
                 </div>
                 <div class="space-y-4">
@@ -498,7 +524,6 @@
     <script>
         var GRID_SIZE = 60;
         var TOTAL = GRID_SIZE * GRID_SIZE;
-        var MID = GRID_SIZE / 2;
         var cells = [];
         var turnCount = 0;
         var isBlendMode = false;
@@ -520,7 +545,6 @@
             OCEAN: ['#0077B6', '#00B4D8', '#90E0EF', '#03045E', '#023E8A', '#CAF0F8', '#48CAE4', '#0096C7', '#FFFFFF', '#111111']
         };
 
-        // --- UTILS ---
         function hsvToRgb(h, s, v) {
             h /= 360; s /= 100; v /= 100;
             var r, g, b, i = Math.floor(h * 6), f = h * 6 - i, p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
@@ -540,6 +564,7 @@
         }
         function rgbToHex(r, g, b) { return "#" + [r, g, b].map(function (x) { return x.toString(16).padStart(2, '0'); }).join(''); }
         function hexToRgb(hex) { var res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return res ? [parseInt(res[1], 16), parseInt(res[2], 16), parseInt(res[3], 16)] : null; }
+        function getRandomHex() { var c = Math.floor(Math.random() * 16777215).toString(16); return "#" + ("000000" + c).slice(-6); }
 
         function initColorSliders() {
             var iH = document.getElementById('input-h'), iS = document.getElementById('input-s'), iB = document.getElementById('input-b');
@@ -564,17 +589,27 @@
         function updatePoolUI() {
             var poolEl = document.getElementById('selected-pool'); poolEl.innerHTML = '';
             for (var i = 0; i < 10; i++) {
-                var slot = document.createElement('div'); slot.className = 'color-slot';
-                if (colorPool[i]) { slot.style.backgroundColor = colorPool[i]; slot.onclick = (function (idx) { return function () { colorPool.splice(idx, 1); updatePoolUI(); }; })(i); }
+                var slot = document.createElement('div');
+                if (colorPool[i]) {
+                    slot.className = 'color-slot';
+                    slot.style.backgroundColor = colorPool[i];
+                    var overlay = document.createElement('div');
+                    overlay.className = 'slot-remove-overlay';
+                    overlay.innerHTML = '<i data-lucide="x" class="w-4 h-4"></i>';
+                    slot.appendChild(overlay);
+                    slot.onclick = (function (idx) { return function () { colorPool.splice(idx, 1); updatePoolUI(); }; })(i);
+                } else {
+                    slot.className = 'color-slot empty';
+                }
                 poolEl.appendChild(slot);
             }
             document.getElementById('pool-count').innerText = colorPool.length + "/10";
             var btn = document.getElementById('start-btn');
             if (colorPool.length > 0) { btn.disabled = false; btn.className = 'w-full py-5 bg-cyan-500 text-black text-xs font-black uppercase tracking-[0.3em] hover:bg-white transition-all shadow-xl'; btn.innerText = "Launch Art Studio (" + colorPool.length + ")"; }
             else { btn.disabled = true; btn.className = 'w-full py-5 bg-slate-800 text-slate-500 text-xs font-black uppercase tracking-[0.3em] cursor-not-allowed'; btn.innerText = 'Select Colors'; }
+            lucide.createIcons();
         }
 
-        // --- ALL 20 CARDS ---
         var CARD_TEMPLATES = [
             { name: 'STEP SAMPLER', category: 'Generation', icon: 'hash', create: function () { var col = getStudioColor(); var n = Math.floor(Math.random() * 10) + 5; return { color: col, desc: n + "번째 슬롯마다 픽셀 배치.", logic: function (c) { return c.map(function (x, i) { return i % n === 0 ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
             { name: 'MODULO MESH', category: 'Generation', icon: 'grid', create: function () { var col = getStudioColor(); var m = Math.floor(Math.random() * 8) + 8; return { color: col, desc: m + "픽셀 주기로 격자망 형성.", logic: function (c) { return c.map(function (x) { return (x.x % m === 0 || x.y % m === 0) ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
@@ -591,16 +626,26 @@
             { name: 'FLOW DISTORT', category: 'Distortion', icon: 'zap', create: function () { var st = 2 + Math.random() * 6; var fr = 0.1 + Math.random() * 0.2; return { color: '#00f2ff', desc: "유체역학 필드 공간 왜곡.", logic: function (c) { return c.map(function (p) { var nx = (p.x + Math.floor(Math.sin(p.y * fr) * st) + GRID_SIZE) % GRID_SIZE; var ny = (p.y + Math.floor(Math.cos(p.x * fr) * st) + GRID_SIZE) % GRID_SIZE; return Object.assign({}, p, { x: nx, y: ny }); }); } }; } },
             { name: 'DIFFUSION', category: 'Distortion', icon: 'expand', create: function () { return { color: '#a78bfa', desc: "주변 빈 공간으로 색상이 번져나갑니다.", logic: function (c) { var next = c.slice(); c.filter(function (p) { return p.active; }).forEach(function (p) { if (Math.random() > 0.6) { var nx = (p.x + (Math.floor(Math.random() * 3) - 1) + GRID_SIZE) % GRID_SIZE, ny = (p.y + (Math.floor(Math.random() * 3) - 1) + GRID_SIZE) % GRID_SIZE; next[ny * GRID_SIZE + nx] = Object.assign({}, p, { x: nx, y: ny, active: true }); } }); return next; } }; } },
             { name: 'PALETTE SWAP', category: 'Alignment', icon: 'shuffle', create: function () { return { color: '#fff', desc: "픽셀 색상 팔레트 내 교체.", logic: function (c) { if (allRandomMode || colorPool.length < 2) return c.map(function (x) { return x.active ? Object.assign({}, x, { color: getStudioColor() }) : x; }); var m = new Map(); var sh = colorPool.slice().sort(function () { return Math.random() - 0.5; }); colorPool.forEach(function (col, i) { m.set(col, sh[i]); }); return c.map(function (x) { return x.active ? Object.assign({}, x, { color: m.get(x.color) || x.color }) : x; }); } }; } },
-            { name: 'LUMA SORT', category: 'Alignment', icon: 'list-ordered', create: function () { return { color: '#f8fafc', desc: "명도 데이터 순 물리 정렬.", logic: function (c) { var acs = c.filter(function (x) { return x.active; }).sort(function (a, b) { var getL = function (col) { var dc = document.createElement('canvas').getContext('2d'); dc.fillStyle = col; var m = dc.fillStyle.match(/\d+/g); return m ? (m[0] * 0.3 + m[1] * 0.59 + m[2] * 0.11) : 0; }; return getL(b.color) - getL(a.color); }); var next = c.map(function (x) { return Object.assign({}, x, { active: false }); }); acs.forEach(function (ac, i) { if (i < TOTAL) next[i] = Object.assign({}, next[i], { active: true, color: ac.color }); }); return next; } }; } },
+            { name: 'LUMA SORT', category: 'Alignment', icon: 'list-ordered', create: function () { return { color: '#f8fafc', desc: "명도 데이터 순 물리 정렬.", logic: function (c) { var acs = c.filter(function (x) { return x.active; }).sort(function (a, b) { var getL = function (col) { var d = document.createElement('canvas').getContext('2d'); d.fillStyle = col; var m = d.fillStyle.match(/\d+/g); return m ? (m[0] * 0.3 + m[1] * 0.59 + m[2] * 0.11) : 0; }; return getL(b.color) - getL(a.color); }); var next = c.map(function (x) { return Object.assign({}, x, { active: false }); }); acs.forEach(function (ac, i) { if (i < TOTAL) next[i] = Object.assign({}, next[i], { active: true, color: ac.color }); }); return next; } }; } },
             { name: 'RANDOM MIRROR', category: 'Reflection', icon: 'combine', create: function () { var axis = Math.random() > 0.5 ? 'X' : 'Y'; var side = Math.random() > 0.5 ? 0 : 1; return { color: '#ec4899', desc: "무작위 축 대칭 반사를 적용.", logic: function (c) { var next = c.slice(); var half = GRID_SIZE / 2; if (axis === 'X') { for (var y = 0; y < GRID_SIZE; y++) for (var x = 0; x < half; x++) { var s = side ? c[y * GRID_SIZE + ((GRID_SIZE - 1) - x)] : c[y * GRID_SIZE + x], tx = side ? x : (GRID_SIZE - 1) - x; next[y * GRID_SIZE + tx] = Object.assign({}, s, { x: tx, y: y }); } } else { for (var x = 0; x < GRID_SIZE; x++) for (var y = 0; y < half; y++) { var s = side ? c[((GRID_SIZE - 1) - y) * GRID_SIZE + x] : c[y * GRID_SIZE + x], ty = side ? y : (GRID_SIZE - 1) - y; next[ty * GRID_SIZE + x] = Object.assign({}, s, { x: x, y: ty }); } } return next; } }; } },
             { name: 'QUADRANT SYNC', category: 'Reflection', icon: 'layout-grid', create: function () { var srcQ = Math.floor(Math.random() * 4); var half = GRID_SIZE / 2; return { color: '#00f2ff', desc: "사분면 무작위 복제로 패턴화.", logic: function (c) { var next = c.slice(); var xO = (srcQ % 2) * half, yO = Math.floor(srcQ / 2) * half; for (var y = 0; y < half; y++) for (var x = 0; x < half; x++) { var s = c[(y + yO) * GRID_SIZE + (x + xO)]; for (var i = 0; i < 4; i++) { var tx = x + (i % 2) * half, ty = y + Math.floor(i / 2) * half; next[ty * GRID_SIZE + tx] = Object.assign({}, s, { x: tx, y: ty }); } } return next; } }; } },
             { name: 'ANGULAR SYM', category: 'Reflection', icon: 'refresh-ccw', create: function () { return { color: '#fbbf24', desc: "4방향 회전 대칭 완성.", logic: function (c) { var next = c.slice(); var limit = GRID_SIZE / 2; for (var y = 0; y < limit; y++) for (var x = 0; x < limit; x++) { var s = c[y * GRID_SIZE + x]; if (!s.active) continue;[[(GRID_SIZE - 1) - x, y], [x, (GRID_SIZE - 1) - y], [(GRID_SIZE - 1) - x, (GRID_SIZE - 1) - y]].forEach(function (sym) { var sx = sym[0], sy = sym[1]; next[sy * GRID_SIZE + sx] = Object.assign({}, s, { x: sx, y: sy, active: true }); }); } return next; } }; } },
-            { name: 'KALEIDOSCOPE N', category: 'Reflection', icon: 'snowflake', create: function () { var n = [6, 8, 12, 16][Math.floor(Math.random() * 4)]; return { color: '#fbbf24', desc: n + "분할 무작위 만화경 대칭 적용.", logic: function (c) { var next = c.slice(); var center = GRID_SIZE / 2 - 0.5; var angleStep = (Math.PI * 2) / n; c.forEach(function (p) { if (!p.active) return; var dx = p.x - center, dy = p.y - center, r = Math.sqrt(dx * dx + dy * dy), startAngle = Math.atan2(dy, dx); for (var i = 1; i < n; i++) { var curAngle = startAngle + i * angleStep; var nx = Math.round(center + r * Math.cos(curAngle)), ny = Math.round(center + r * Math.sin(curAngle)); if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) next[ny * GRID_SIZE + nx] = Object.assign({}, p, { x: nx, y: ny }); } }); return next; } }; } }
+            { name: 'KALEIDOSCOPE N', category: 'Reflection', icon: 'snowflake', create: function () { var n = [6, 8, 12, 16][Math.floor(Math.random() * 4)]; return { color: '#fbbf24', desc: n + "분할 만화경 대칭 적용.", logic: function (c) { var next = c.slice(); var center = GRID_SIZE / 2 - 0.5; var angleStep = (Math.PI * 2) / n; c.forEach(function (p) { if (!p.active) return; var dx = p.x - center, dy = p.y - center, r = Math.sqrt(dx * dx + dy * dy), startAngle = Math.atan2(dy, dx); for (var i = 1; i < n; i++) { var curAngle = startAngle + i * angleStep; var nx = Math.round(center + r * Math.cos(curAngle)), ny = Math.round(center + r * Math.sin(curAngle)); if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) next[ny * GRID_SIZE + nx] = Object.assign({}, p, { x: nx, y: ny }); } }); return next; } }; } }
         ];
 
         function startStudio(allR) {
             allRandomMode = allR; isChallengeMode = document.getElementById('game-mode-toggle').checked;
-            if (isChallengeMode) { pickDeck(); showDeckReveal(); } else { finalizeStart(); }
+
+            // NEW: Absolute Random Hex Mode logic
+            if (allRandomMode) {
+                colorPool = [];
+                for (var i = 0; i < 10; i++) {
+                    colorPool.push(getRandomHex());
+                }
+            }
+
+            if (isChallengeMode) { pickDeck(); showDeckReveal(); }
+            else { finalizeStart(); }
         }
 
         function pickDeck() {
@@ -620,7 +665,7 @@
                 var div = document.createElement('div');
                 div.className = 'glass p-4 flex flex-col items-center reveal-anim text-center';
                 div.style.animationDelay = (i * 0.1) + "s";
-                div.innerHTML = '<div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-cyan-400 mb-2"><i data-lucide="' + card.icon + '" class="w-5 h-5"></i></div><div class="text-[7px] text-slate-500 uppercase font-black mb-1">' + card.category + '</div><div class="text-[9px] font-black text-white uppercase">' + card.name + '</div>';
+                div.innerHTML = '<div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-cyan-400 mb-2"><i data-lucide="' + card.icon + '" class="w-5 h-5"></i></div><div class="text-[8px] text-slate-500 uppercase font-black mb-1">' + card.category + '</div><div class="text-[9px] font-black text-white uppercase">' + card.name + '</div>';
                 list.appendChild(div);
             });
             modal.classList.remove('hidden'); lucide.createIcons();
@@ -636,17 +681,36 @@
                 var deckIcons = document.getElementById('deck-icons'); deckIcons.innerHTML = '';
                 activeDeck.forEach(function (c) { var icon = document.createElement('div'); icon.className = 'w-8 h-8 glass flex items-center justify-center text-white/30 hover:text-cyan-400 transition-colors'; icon.title = c.name; icon.innerHTML = '<i data-lucide="' + c.icon + '" class="w-4 h-4"></i>'; deckIcons.appendChild(icon); });
             }
-            if (!allRandomMode) { var cp = document.getElementById('current-palette-display'); cp.innerHTML = ''; colorPool.forEach(function (c) { var d = document.createElement('div'); d.className = 'w-2 h-2 rounded-full'; d.style.backgroundColor = c; cp.appendChild(d); }); }
+            var cp = document.getElementById('current-palette-display'); cp.innerHTML = '';
+            colorPool.forEach(function (c) { var d = document.createElement('div'); d.className = 'w-2 h-2 rounded-full'; d.style.backgroundColor = c; cp.appendChild(d); });
             initGrid(); rerollHand(); lucide.createIcons();
         }
 
         function initGrid() { cells = []; for (var y = 0; y < GRID_SIZE; y++) for (var x = 0; x < GRID_SIZE; x++) cells.push({ x: x, y: y, active: false, color: '#000' }); renderGrid(); }
+
         function renderGrid() {
             var el = document.getElementById('grid'); el.innerHTML = ''; el.style.gridTemplateColumns = "repeat(" + GRID_SIZE + ", 1fr)";
             var s = Math.min(window.innerWidth * 0.92, 650); el.style.width = el.style.height = s + "px";
             var frag = document.createDocumentFragment();
-            cells.forEach(function (c) { var d = document.createElement('div'); d.className = 'pixel'; if (c.active) { d.style.backgroundColor = c.color; if (isBlendMode) d.style.opacity = "0.8"; } else d.style.backgroundColor = 'transparent'; frag.appendChild(d); });
+            cells.forEach(function (c) {
+                var d = document.createElement('div'); d.className = 'pixel';
+                if (c.active) { d.style.backgroundColor = c.color; if (isBlendMode) d.style.opacity = "0.75"; }
+                else d.style.backgroundColor = 'transparent';
+                frag.appendChild(d);
+            });
             el.appendChild(frag);
+        }
+
+        function toggleBlendMode() { isBlendMode = !isBlendMode; document.getElementById('blend-status').innerText = isBlendMode ? 'ON' : 'OFF'; document.getElementById('blend-toggle').classList.toggle('btn-active'); renderGrid(); }
+
+        function resetLab() {
+            cells = []; turnCount = 0; remainingTurns = 20; remainingRerolls = 2; activeDeck = []; colorPool = [];
+            document.getElementById('setup-screen').classList.remove('setup-hidden'); document.getElementById('app').classList.add('opacity-0');
+            document.getElementById('game-stats').classList.add('hidden'); document.getElementById('deck-sidebar').classList.add('hidden');
+            document.getElementById('finish-overlay').classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('history-log').innerHTML = '<div class="text-slate-800 italic uppercase">Initializing Lab...</div>';
+            document.getElementById('cycle-count').innerText = "CYC: 000";
+            updatePoolUI();
         }
 
         function rerollHand() {
@@ -680,7 +744,7 @@
             o.classList.remove('opacity-0', 'pointer-events-none'); w.classList.add('compiling-active');
             await new Promise(function (r) { setTimeout(r, 450); });
             var nR = card.logic(cells.slice());
-            if (isBlendMode) cells = nR.map(function (nC, i) { var oC = cells[i]; if (oC.active && nC.active && oC.color !== nC.color) return Object.assign({}, nC, { color: mixColors(oC.color, nC.color) }); return nC; });
+            if (isBlendMode) { cells = nR.map(function (nC, i) { var oC = cells[i]; if (oC.active && nC.active && oC.color !== nC.color) return Object.assign({}, nC, { color: mixColors(oC.color, nC.color) }); return nC; }); }
             else cells = nR;
             turnCount++;
             if (isChallengeMode) { remainingTurns--; remainingRerolls = 2; }
@@ -692,30 +756,33 @@
             o.classList.add('opacity-0', 'pointer-events-none'); w.classList.remove('compiling-active');
         }
 
+        function mixColors(c1, c2) {
+            if (!c1 || c1 === '#000' || c1 === 'rgb(0, 0, 0)') return c2;
+            var d = document.createElement('canvas').getContext('2d');
+            function parse(color) { d.fillStyle = color; var norm = d.fillStyle; var m = norm.match(/\d+/g); return m ? m.map(Number) : [0, 0, 0]; }
+            var r1 = parse(c1), r2 = parse(c2);
+            return "rgb(" + Math.round((r1[0] + r2[0]) / 2) + "," + Math.round((r1[1] + r2[1]) / 2) + "," + Math.round((r1[2] + r2[2] / 2)) + ")";
+        }
+
         function exportImage(mode) {
             var canvas = document.getElementById('export-canvas'), ctx = canvas.getContext('2d'), pS = 10, w = GRID_SIZE * pS, h = GRID_SIZE * pS;
             if (mode === 'single') { canvas.width = w; canvas.height = h; drawM(ctx, cells, 0, 0, pS, 0); }
-            else {
-                canvas.width = w * 2; canvas.height = h * 2;
-                if (mode === 'repeat') { [0, w].forEach(function (dx) { [0, h].forEach(function (dy) { drawM(ctx, cells, dx, dy, pS, 0); }); }); }
-                else { drawM(ctx, cells, 0, 0, pS, 0); drawM(ctx, cells, w, 0, pS, 90); drawM(ctx, cells, 0, h, pS, 270); drawM(ctx, cells, w, h, pS, 180); }
-            }
+            else if (mode === 'repeat') { canvas.width = w * 2; canvas.height = h * 2;[0, w].forEach(function (dx) { [0, h].forEach(function (dy) { drawM(ctx, cells, dx, dy, pS, 0); }); }); }
+            else if (mode === 'radial') { canvas.width = w * 2; canvas.height = h * 2; drawM(ctx, cells, 0, 0, pS, 0); drawM(ctx, cells, w, 0, pS, 90); drawM(ctx, cells, 0, h, pS, 270); drawM(ctx, cells, w, h, pS, 180); }
+            else if (mode === 'repeat4') { canvas.width = w * 4; canvas.height = h * 4;[0, w, w * 2, w * 3].forEach(function (dx) { [0, h, h * 2, h * 3].forEach(function (dy) { drawM(ctx, cells, dx, dy, pS, 0); }); }); }
+            else if (mode === 'radial4') { canvas.width = w * 4; canvas.height = h * 4;[0, w * 2].forEach(function (ox) { [0, h * 2].forEach(function (oy) { drawM(ctx, cells, ox, oy, pS, 0); drawM(ctx, cells, ox + w, oy, pS, 90); drawM(ctx, cells, ox, oy + h, pS, 270); drawM(ctx, cells, ox + w, oy + h, pS, 180); }); }); }
             var l = document.createElement('a'); l.download = "Alchemy60_" + mode + "_" + Date.now() + ".png"; l.href = canvas.toDataURL('image/png'); l.click();
         }
+
         function drawM(ctx, d, ox, oy, ps, rot) {
             ctx.save(); ctx.translate(ox, oy);
             if (rot !== 0) { ctx.translate((GRID_SIZE * ps) / 2, (GRID_SIZE * ps) / 2); ctx.rotate((rot * Math.PI) / 180); ctx.translate(-(GRID_SIZE * ps) / 2, -(GRID_SIZE * ps) / 2); }
-            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, GRID_SIZE * ps, GRID_SIZE * ps); d.forEach(function (c) { if (c.active) { ctx.fillStyle = c.color; if (isBlendMode) ctx.globalAlpha = 0.8; ctx.fillRect(c.x * ps, c.y * ps, ps, ps); ctx.globalAlpha = 1.0; } });
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, GRID_SIZE * ps, GRID_SIZE * ps);
+            d.forEach(function (c) { if (c.active) { ctx.fillStyle = c.color; if (isBlendMode) ctx.globalAlpha = 0.75; ctx.fillRect(c.x * ps, c.y * ps, ps, ps); ctx.globalAlpha = 1.0; } });
             ctx.restore();
         }
 
-        function getStudioColor() { return allRandomMode ? "hsl(" + Math.floor(Math.random() * 360) + ", 75%, 60%)" : colorPool[Math.floor(Math.random() * colorPool.length)]; }
-        function mixColors(c1, c2) {
-            if (!c1 || c1 === '#000' || c1 === 'rgb(0, 0, 0)') return c2;
-            var d = document.createElement('canvas').getContext('2d'); d.fillStyle = c1; var r1 = d.fillStyle.match(/\d+/g).map(Number);
-            d.fillStyle = c2; var r2 = d.fillStyle.match(/\d+/g).map(Number);
-            return "rgb(" + Math.round((r1[0] + r2[0] * 2) / 3) + "," + Math.round((r1[1] + r2[1] * 2) / 3) + "," + Math.round((r1[2] + r2[2] * 2) / 3) + ")";
-        }
+        function getStudioColor() { return colorPool[Math.floor(Math.random() * colorPool.length)]; }
 
         window.addEventListener('resize', renderGrid);
         window.onload = function () { initColorSliders(); updatePoolUI(); lucide.createIcons(); };
