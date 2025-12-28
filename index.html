@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Grid Alchemist: 60x60 Ultimate Deck Edition</title>
+    <title>Grid Alchemist: 60x60 Master Deck Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -257,7 +257,8 @@
             <div class="max-w-6xl w-full flex flex-col items-center">
                 <div class="flex items-center gap-2 text-cyan-400 mb-4">
                     <i data-lucide="palette" class="w-6 h-6 animate-pulse"></i>
-                    <span class="text-xs font-bold tracking-[0.5em] uppercase">Visual DNA Initialization [60x60]</span>
+                    <span class="text-xs font-bold tracking-[0.5em] uppercase">Visual DNA Initialization [60x60
+                        Master]</span>
                 </div>
                 <h1
                     class="text-4xl md:text-7xl font-black italic tracking-tighter text-white uppercase text-center mb-10 leading-tight">
@@ -388,8 +389,7 @@
                     Deck Synchronized</h2>
                 <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-10 text-center">당신의 실험을 위해 7장의 카드가
                     선택되었습니다.</p>
-                <div id="deck-display-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full mb-12">
-                </div>
+                <div id="deck-display-list" class="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full mb-12"></div>
                 <button onclick="closeDeckReveal()"
                     class="w-full max-w-sm py-5 bg-white text-black text-xs font-black uppercase tracking-[0.5em] hover:bg-cyan-400 transition-all shadow-[0_0_40px_rgba(255,255,255,0.1)]">
                     Initialize Session
@@ -469,7 +469,7 @@
                             Workpiece.</p>
                         <button onclick="exportImage('radial4')"
                             class="px-10 py-4 bg-cyan-600 text-black text-xs font-black uppercase tracking-[0.5em] hover:bg-white transition-all">Export
-                            Artwork</button>
+                            Result</button>
                     </div>
                 </div>
             </div>
@@ -610,42 +610,79 @@
             lucide.createIcons();
         }
 
+        // --- ALL 23 CARDS (20 EXISTING + 3 NEW) ---
         var CARD_TEMPLATES = [
+            // Category: Generation (10)
             { name: 'STEP SAMPLER', category: 'Generation', icon: 'hash', create: function () { var col = getStudioColor(); var n = Math.floor(Math.random() * 10) + 5; return { color: col, desc: n + "번째 슬롯마다 픽셀 배치.", logic: function (c) { return c.map(function (x, i) { return i % n === 0 ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
             { name: 'MODULO MESH', category: 'Generation', icon: 'grid', create: function () { var col = getStudioColor(); var m = Math.floor(Math.random() * 8) + 8; return { color: col, desc: m + "픽셀 주기로 격자망 형성.", logic: function (c) { return c.map(function (x) { return (x.x % m === 0 || x.y % m === 0) ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
             { name: 'CONCENTRIC RINGS', category: 'Generation', icon: 'target', create: function () { var col = getStudioColor(); var gap = 4 + Math.random() * 6; return { color: col, desc: "중심 기반 동심원 패턴 주입.", logic: function (c) { return c.map(function (x) { return (Math.floor(Math.sqrt(Math.pow(x.x - (GRID_SIZE / 2 - 0.5), 2) + Math.pow(x.y - (GRID_SIZE / 2 - 0.5), 2))) % Math.floor(gap) === 0) ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
             { name: 'TRIANGLE MESH', category: 'Generation', icon: 'triangle', create: function () { var col = getStudioColor(); var pts = Array.from({ length: 3 }, function () { return { x: Math.random() * GRID_SIZE, y: Math.random() * GRID_SIZE }; }); return { color: col, desc: "랜덤 삼각형 폴리곤 채색.", logic: function (c) { var area = 0.5 * (-pts[1].y * pts[2].x + pts[0].y * (-pts[1].x + pts[2].x) + pts[0].x * (pts[1].y - pts[2].y) + pts[1].x * pts[2].y); return c.map(function (pt) { var s = 1 / (2 * area) * (pts[0].y * pts[2].x - pts[0].x * pts[2].y + (pts[2].y - pts[0].y) * pt.x + (pts[0].x - pts[2].x) * pt.y); var t = 1 / (2 * area) * (pts[0].x * pts[1].y - pts[0].y * pts[1].x + (pts[0].y - pts[1].y) * pt.x + (pts[1].x - pts[0].x) * pt.y); return (s > 0 && t > 0 && 1 - s - t > 0) ? Object.assign({}, pt, { active: true, color: col }) : pt; }); } }; } },
-            { name: 'CIRCULAR CORE', category: 'Generation', icon: 'circle', create: function () { var col = getStudioColor(); var r = 8 + Math.random() * 18, cx = 15 + Math.random() * 30, cy = 15 + Math.random() * 30; return { color: col, desc: "반지름 " + r.toFixed(0) + "의 원형 데이터를 주입.", logic: function (c) { return c.map(function (x) { return (Math.sqrt(Math.pow(x.x - cx, 2) + Math.pow(x.y - cy, 2)) < r) ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
+            {
+                name: 'QUAD MESH', category: 'Generation', icon: 'square', create: function () {
+                    var col = getStudioColor(); var pts = Array.from({ length: 4 }, function () { return { x: Math.random() * GRID_SIZE, y: Math.random() * GRID_SIZE }; }); return {
+                        color: col, desc: "4개의 점을 잇는 사각형 채색.", logic: function (c) {
+                            function inTri(p, p0, p1, p2) { var area = 0.5 * (-p1.y * p2.x + p0.y * (-p1.x + p2.x) + p0.x * (p1.y - p2.y) + p1.x * p2.y); var s = 1 / (2 * area) * (p0.y * p2.x - p0.x * p2.y + (p2.y - p0.y) * p.x + (p0.x - p2.x) * p.y); var t = 1 / (2 * area) * (p0.x * p1.y - p0.y * p1.x + (p0.y - p1.y) * p.x + (p1.x - p0.x) * p.y); return s > 0 && t > 0 && (1 - s - t) > 0; }
+                            return c.map(function (pt) { return (inTri(pt, pts[0], pts[1], pts[2]) || inTri(pt, pts[0], pts[2], pts[3])) ? Object.assign({}, pt, { active: true, color: col }) : pt; });
+                        }
+                    };
+                }
+            },
+            {
+                name: 'HONEYCOMB', category: 'Generation', icon: 'box', create: function () {
+                    var col = getStudioColor(); var size = 4 + Math.random() * 4; return {
+                        color: col, desc: "벌집 패턴 생성.", logic: function (c) {
+                            return c.map(function (pt) {
+                                var px = pt.x / size, py = pt.y / (size * Math.sqrt(3)); var isEven = Math.floor(py) % 2 === 0; var dx = (isEven ? px : px + 0.5) % 1.0; var dy = py % 1.0;
+                                return (dx > 0.1 && dx < 0.9 && dy > 0.1 && dy < 0.9) ? Object.assign({}, pt, { active: true, color: col }) : pt;
+                            });
+                        }
+                    };
+                }
+            },
+            { name: 'CIRCULAR CORE', category: 'Generation', icon: 'circle', create: function () { var col = getStudioColor(); var r = 8 + Math.random() * 18, cx = 15 + Math.random() * 30, cy = 15 + Math.random() * 30; return { color: col, desc: "반지름 원형 데이터를 주입.", logic: function (c) { return c.map(function (x) { return (Math.sqrt(Math.pow(x.x - cx, 2) + Math.pow(x.y - cy, 2)) < r) ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
             { name: 'STOCHASTIC NOISE', category: 'Generation', icon: 'sparkles', create: function () { var col = getStudioColor(); var den = 0.05 + Math.random() * 0.15; return { color: col, desc: "무작위 픽셀 노이즈 살포.", logic: function (c) { return c.map(function (x) { return Math.random() < den ? Object.assign({}, x, { active: true, color: col }) : x; }); } }; } },
             { name: 'BIO-MORPH', category: 'Generation', icon: 'dna', create: function () { var col = getStudioColor(); var sc = 0.05 + Math.random() * 0.15; var th = -0.2 + Math.random() * 0.4; return { color: col, desc: "유기적 세포 조형 생성.", logic: function (c) { return c.map(function (p) { var val = Math.sin(p.x * sc) + Math.cos(p.y * sc) + Math.sin((p.x + p.y) * sc * 0.5); return val > th ? Object.assign({}, p, { active: true, color: col }) : p; }); } }; } },
-            { name: 'LIFE STEP', category: 'Generation', icon: 'activity', create: function () { return { color: '#8b5cf6', desc: "생태계 진화 규칙 1세대 적용.", logic: function (c) { return c.map(function (x, i) { let n = 0, colors = []; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (dx === 0 && dy === 0) continue; const nx = (x.x + dx + GRID_SIZE) % GRID_SIZE, ny = (x.y + dy + GRID_SIZE) % GRID_SIZE, nb = c[ny * GRID_SIZE + nx]; if (nb.active) { n++; colors.push(nb.color); } } const live = x.active ? (n === 2 || n === 3) : (n === 3); let nCol = x.color; if (!x.active && live && colors.length > 0) nCol = colors[Math.floor(Math.random() * colors.length)]; return Object.assign({}, x, { active: live, color: nCol }); }); } }; } },
+            { name: 'LIFE STEP', category: 'Generation', icon: 'activity', create: function () { return { color: '#8b5cf6', desc: "생태계 진화 규칙 적용.", logic: function (c) { return c.map(function (x, i) { var n = 0, colors = []; for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) { if (dx === 0 && dy === 0) continue; var nx = (x.x + dx + GRID_SIZE) % GRID_SIZE, ny = (x.y + dy + GRID_SIZE) % GRID_SIZE, nb = c[ny * GRID_SIZE + nx]; if (nb.active) { n++; colors.push(nb.color); } } var live = x.active ? (n === 2 || n === 3) : (n === 3); var nCol = x.color; if (!x.active && live && colors.length > 0) nCol = colors[Math.floor(Math.random() * colors.length)]; return Object.assign({}, x, { active: live, color: nCol }); }); } }; } },
+
+            // Category: Distortion (6)
             { name: 'VECTOR DRIFT', category: 'Distortion', icon: 'wind', create: function () { var d = ['UP', 'DOWN', 'LEFT', 'RIGHT'][Math.floor(Math.random() * 4)]; return { color: '#10b981', desc: d + " 방향 가속도 적용.", logic: function (c) { var next = c.map(function (x) { return Object.assign({}, x, { active: false }); }); if (d === 'DOWN') { for (var x = 0; x < GRID_SIZE; x++) { var acs = c.filter(function (p) { return p.x === x && p.active; }); acs.forEach(function (a, i) { var ty = (GRID_SIZE - 1) - i; next[ty * GRID_SIZE + x] = Object.assign({}, a, { y: ty, active: true }); }); } } else if (d === 'UP') { for (var x = 0; x < GRID_SIZE; x++) { var acs = c.filter(function (p) { return p.x === x && p.active; }); acs.forEach(function (a, i) { var ty = i; next[ty * GRID_SIZE + x] = Object.assign({}, a, { y: ty, active: true }); }); } } else if (d === 'RIGHT') { for (var y = 0; y < GRID_SIZE; y++) { var acs = c.filter(function (p) { return p.y === y && p.active; }); acs.forEach(function (a, i) { var tx = (GRID_SIZE - 1) - i; next[y * GRID_SIZE + tx] = Object.assign({}, a, { x: tx, active: true }); }); } } else { for (var y = 0; y < GRID_SIZE; y++) { var acs = c.filter(function (p) { return p.y === y && p.active; }); acs.forEach(function (a, i) { var tx = i; next[y * GRID_SIZE + tx] = Object.assign({}, a, { x: tx, active: true }); }); } } return next; } }; } },
             { name: 'GRAVITY WELL', category: 'Distortion', icon: 'magnet', create: function () { var cx = Math.floor(15 + Math.random() * 30), cy = Math.floor(15 + Math.random() * 30), pull = Math.random() > 0.3; return { color: '#fb7185', desc: "중심점 " + (pull ? "수렴" : "확산") + ".", logic: function (c) { var next = c.map(function (x) { return Object.assign({}, x, { active: false }); }); c.filter(function (p) { return p.active; }).forEach(function (p) { var nx = p.x, ny = p.y; if (pull) { if (nx < cx) nx++; else if (nx > cx) nx--; if (ny < cy) ny++; else if (ny > cy) ny--; } else { if (nx < cx) nx--; else if (nx > cx) nx++; if (ny < cy) ny--; else if (ny > cy) ny++; } nx = (nx + GRID_SIZE) % GRID_SIZE; ny = (ny + GRID_SIZE) % GRID_SIZE; next[ny * GRID_SIZE + nx] = Object.assign({}, p, { x: nx, y: ny, active: true }); }); return next; } }; } },
-            { name: 'GLITCH TEAR', category: 'Distortion', icon: 'scissors', create: function () { var sY = Math.floor(Math.random() * GRID_SIZE), o = Math.floor(Math.random() * 20) - 10; return { color: '#ffffff', desc: "그리드를 수평으로 찢어 오프셋 시킵니다.", logic: function (c) { return c.map(function (x) { return (x.y > sY) ? Object.assign({}, x, { x: (x.x + o + GRID_SIZE) % GRID_SIZE }) : x; }); } }; } },
-            { name: 'LIQUID WAVE', category: 'Distortion', icon: 'waves', create: function () { var a = 3 + Math.random() * 6; return { color: '#00f2ff', desc: "물결 왜곡으로 유동적인 질감을 만듭니다.", logic: function (c) { return c.map(function (x) { return Object.assign({}, x, { x: (x.x + Math.floor(Math.sin(x.y * 0.2) * a) + GRID_SIZE) % GRID_SIZE }); }); } }; } },
-            { name: 'FLOW DISTORT', category: 'Distortion', icon: 'zap', create: function () { var st = 2 + Math.random() * 6; var fr = 0.1 + Math.random() * 0.2; return { color: '#00f2ff', desc: "유체역학 필드 공간 왜곡.", logic: function (c) { return c.map(function (p) { var nx = (p.x + Math.floor(Math.sin(p.y * fr) * st) + GRID_SIZE) % GRID_SIZE; var ny = (p.y + Math.floor(Math.cos(p.x * fr) * st) + GRID_SIZE) % GRID_SIZE; return Object.assign({}, p, { x: nx, y: ny }); }); } }; } },
-            { name: 'DIFFUSION', category: 'Distortion', icon: 'expand', create: function () { return { color: '#a78bfa', desc: "주변 빈 공간으로 색상이 번져나갑니다.", logic: function (c) { var next = c.slice(); c.filter(function (p) { return p.active; }).forEach(function (p) { if (Math.random() > 0.6) { var nx = (p.x + (Math.floor(Math.random() * 3) - 1) + GRID_SIZE) % GRID_SIZE, ny = (p.y + (Math.floor(Math.random() * 3) - 1) + GRID_SIZE) % GRID_SIZE; next[ny * GRID_SIZE + nx] = Object.assign({}, p, { x: nx, y: ny, active: true }); } }); return next; } }; } },
+            { name: 'GLITCH TEAR', category: 'Distortion', icon: 'scissors', create: function () { var sY = Math.floor(Math.random() * GRID_SIZE), o = Math.floor(Math.random() * 20) - 10; return { color: '#ffffff', desc: "수평 찢기 왜곡.", logic: function (c) { return c.map(function (x) { return (x.y > sY) ? Object.assign({}, x, { x: (x.x + o + GRID_SIZE) % GRID_SIZE }) : x; }); } }; } },
+            { name: 'LIQUID WAVE', category: 'Distortion', icon: 'waves', create: function () { var a = 3 + Math.random() * 6; return { color: '#00f2ff', desc: "유동적 물결 왜곡.", logic: function (c) { return c.map(function (x) { return Object.assign({}, x, { x: (x.x + Math.floor(Math.sin(x.y * 0.2) * a) + GRID_SIZE) % GRID_SIZE }); }); } }; } },
+            { name: 'FLOW DISTORT', category: 'Distortion', icon: 'zap', create: function () { var st = 2 + Math.random() * 6; var fr = 0.1 + Math.random() * 0.2; return { color: '#00f2ff', desc: "유체역학 좌표 왜곡.", logic: function (c) { return c.map(function (p) { var nx = (p.x + Math.floor(Math.sin(p.y * fr) * st) + GRID_SIZE) % GRID_SIZE; var ny = (p.y + Math.floor(Math.cos(p.x * fr) * st) + GRID_SIZE) % GRID_SIZE; return Object.assign({}, p, { x: nx, y: ny }); }); } }; } },
+            { name: 'DIFFUSION', category: 'Distortion', icon: 'expand', create: function () { return { color: '#a78bfa', desc: "인접 공간 색상 확산.", logic: function (c) { var next = c.slice(); c.filter(function (p) { return p.active; }).forEach(function (p) { if (Math.random() > 0.6) { var nx = (p.x + (Math.floor(Math.random() * 3) - 1) + GRID_SIZE) % GRID_SIZE, ny = (p.y + (Math.floor(Math.random() * 3) - 1) + GRID_SIZE) % GRID_SIZE; next[ny * GRID_SIZE + nx] = Object.assign({}, p, { x: nx, y: ny, active: true }); } }); return next; } }; } },
+
+            // Category: Alignment/Data (3)
+            {
+                name: 'SHAPE MASK', category: 'Alignment', icon: 'frame', create: function () {
+                    var mode = ['CIR', 'TRI', 'SQ'][Math.floor(Math.random() * 3)]; return {
+                        color: '#ffffff', desc: "특정 도형 외곽 마스킹 제거.", logic: function (c) {
+                            var center = GRID_SIZE / 2, r = 25;
+                            return c.map(function (p) {
+                                var keep = false;
+                                if (mode === 'CIR') keep = Math.sqrt(Math.pow(p.x - center, 2) + Math.pow(p.y - center, 2)) < r;
+                                else if (mode === 'SQ') keep = Math.abs(p.x - center) < r - 5 && Math.abs(p.y - center) < r - 5;
+                                else if (mode === 'TRI') { var h = r * Math.sqrt(3); keep = p.y < center + r / 2 && p.y > center - r && Math.abs(p.x - center) < (center + r / 2 - p.y) * Math.tan(Math.PI / 6) * 3; }
+                                return keep ? p : Object.assign({}, p, { active: false });
+                            });
+                        }
+                    };
+                }
+            },
             { name: 'PALETTE SWAP', category: 'Alignment', icon: 'shuffle', create: function () { return { color: '#fff', desc: "픽셀 색상 팔레트 내 교체.", logic: function (c) { if (allRandomMode || colorPool.length < 2) return c.map(function (x) { return x.active ? Object.assign({}, x, { color: getStudioColor() }) : x; }); var m = new Map(); var sh = colorPool.slice().sort(function () { return Math.random() - 0.5; }); colorPool.forEach(function (col, i) { m.set(col, sh[i]); }); return c.map(function (x) { return x.active ? Object.assign({}, x, { color: m.get(x.color) || x.color }) : x; }); } }; } },
             { name: 'LUMA SORT', category: 'Alignment', icon: 'list-ordered', create: function () { return { color: '#f8fafc', desc: "명도 데이터 순 물리 정렬.", logic: function (c) { var acs = c.filter(function (x) { return x.active; }).sort(function (a, b) { var getL = function (col) { var d = document.createElement('canvas').getContext('2d'); d.fillStyle = col; var m = d.fillStyle.match(/\d+/g); return m ? (m[0] * 0.3 + m[1] * 0.59 + m[2] * 0.11) : 0; }; return getL(b.color) - getL(a.color); }); var next = c.map(function (x) { return Object.assign({}, x, { active: false }); }); acs.forEach(function (ac, i) { if (i < TOTAL) next[i] = Object.assign({}, next[i], { active: true, color: ac.color }); }); return next; } }; } },
-            { name: 'RANDOM MIRROR', category: 'Reflection', icon: 'combine', create: function () { var axis = Math.random() > 0.5 ? 'X' : 'Y'; var side = Math.random() > 0.5 ? 0 : 1; return { color: '#ec4899', desc: "무작위 축 대칭 반사를 적용.", logic: function (c) { var next = c.slice(); var half = GRID_SIZE / 2; if (axis === 'X') { for (var y = 0; y < GRID_SIZE; y++) for (var x = 0; x < half; x++) { var s = side ? c[y * GRID_SIZE + ((GRID_SIZE - 1) - x)] : c[y * GRID_SIZE + x], tx = side ? x : (GRID_SIZE - 1) - x; next[y * GRID_SIZE + tx] = Object.assign({}, s, { x: tx, y: y }); } } else { for (var x = 0; x < GRID_SIZE; x++) for (var y = 0; y < half; y++) { var s = side ? c[((GRID_SIZE - 1) - y) * GRID_SIZE + x] : c[y * GRID_SIZE + x], ty = side ? y : (GRID_SIZE - 1) - y; next[ty * GRID_SIZE + x] = Object.assign({}, s, { x: x, y: ty }); } } return next; } }; } },
-            { name: 'QUADRANT SYNC', category: 'Reflection', icon: 'layout-grid', create: function () { var srcQ = Math.floor(Math.random() * 4); var half = GRID_SIZE / 2; return { color: '#00f2ff', desc: "사분면 무작위 복제로 패턴화.", logic: function (c) { var next = c.slice(); var xO = (srcQ % 2) * half, yO = Math.floor(srcQ / 2) * half; for (var y = 0; y < half; y++) for (var x = 0; x < half; x++) { var s = c[(y + yO) * GRID_SIZE + (x + xO)]; for (var i = 0; i < 4; i++) { var tx = x + (i % 2) * half, ty = y + Math.floor(i / 2) * half; next[ty * GRID_SIZE + tx] = Object.assign({}, s, { x: tx, y: ty }); } } return next; } }; } },
-            { name: 'ANGULAR SYM', category: 'Reflection', icon: 'refresh-ccw', create: function () { return { color: '#fbbf24', desc: "4방향 회전 대칭 완성.", logic: function (c) { var next = c.slice(); var limit = GRID_SIZE / 2; for (var y = 0; y < limit; y++) for (var x = 0; x < limit; x++) { var s = c[y * GRID_SIZE + x]; if (!s.active) continue;[[(GRID_SIZE - 1) - x, y], [x, (GRID_SIZE - 1) - y], [(GRID_SIZE - 1) - x, (GRID_SIZE - 1) - y]].forEach(function (sym) { var sx = sym[0], sy = sym[1]; next[sy * GRID_SIZE + sx] = Object.assign({}, s, { x: sx, y: sy, active: true }); }); } return next; } }; } },
-            { name: 'KALEIDOSCOPE N', category: 'Reflection', icon: 'snowflake', create: function () { var n = [6, 8, 12, 16][Math.floor(Math.random() * 4)]; return { color: '#fbbf24', desc: n + "분할 만화경 대칭 적용.", logic: function (c) { var next = c.slice(); var center = GRID_SIZE / 2 - 0.5; var angleStep = (Math.PI * 2) / n; c.forEach(function (p) { if (!p.active) return; var dx = p.x - center, dy = p.y - center, r = Math.sqrt(dx * dx + dy * dy), startAngle = Math.atan2(dy, dx); for (var i = 1; i < n; i++) { var curAngle = startAngle + i * angleStep; var nx = Math.round(center + r * Math.cos(curAngle)), ny = Math.round(center + r * Math.sin(curAngle)); if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) next[ny * GRID_SIZE + nx] = Object.assign({}, p, { x: nx, y: ny }); } }); return next; } }; } }
+
+            // Category: Reflection (4)
+            { name: 'RANDOM MIRROR', category: 'Reflection', icon: 'combine', create: function () { var axis = Math.random() > 0.5 ? 'X' : 'Y'; var side = Math.random() > 0.5 ? 0 : 1; return { color: '#ec4899', desc: "무작위 축 대칭 반사.", logic: function (c) { var next = c.slice(); var half = GRID_SIZE / 2; if (axis === 'X') { for (var y = 0; y < GRID_SIZE; y++) for (var x = 0; x < half; x++) { var s = side ? c[y * GRID_SIZE + ((GRID_SIZE - 1) - x)] : c[y * GRID_SIZE + x], tx = side ? x : (GRID_SIZE - 1) - x; next[y * GRID_SIZE + tx] = Object.assign({}, s, { x: tx, y: y }); } } else { for (var x = 0; x < GRID_SIZE; x++) for (var y = 0; y < half; y++) { var s = side ? c[((GRID_SIZE - 1) - y) * GRID_SIZE + x] : c[y * GRID_SIZE + x], ty = side ? y : (GRID_SIZE - 1) - y; next[ty * GRID_SIZE + x] = Object.assign({}, s, { x: x, y: ty }); } } return next; } }; } },
+            { name: 'QUADRANT SYNC', category: 'Reflection', icon: 'layout-grid', create: function () { var srcQ = Math.floor(Math.random() * 4); var half = GRID_SIZE / 2; return { color: '#00f2ff', desc: "사분면 패턴 동기화.", logic: function (c) { var next = c.slice(); var xO = (srcQ % 2) * half, yO = Math.floor(srcQ / 2) * half; for (var y = 0; y < half; y++) for (var x = 0; x < half; x++) { var s = c[(y + yO) * GRID_SIZE + (x + xO)]; for (var i = 0; i < 4; i++) { var tx = x + (i % 2) * half, ty = y + Math.floor(i / 2) * half; next[ty * GRID_SIZE + tx] = Object.assign({}, s, { x: tx, y: ty }); } } return next; } }; } },
+            { name: 'ANGULAR SYM', category: 'Reflection', icon: 'refresh-ccw', create: function () { return { color: '#fbbf24', desc: "4방향 회전 대칭.", logic: function (c) { var next = c.slice(); var limit = GRID_SIZE / 2; for (var y = 0; y < limit; y++) for (var x = 0; x < limit; x++) { var s = c[y * GRID_SIZE + x]; if (!s.active) continue;[[(GRID_SIZE - 1) - x, y], [x, (GRID_SIZE - 1) - y], [(GRID_SIZE - 1) - x, (GRID_SIZE - 1) - y]].forEach(function (sym) { var sx = sym[0], sy = sym[1]; next[sy * GRID_SIZE + sx] = Object.assign({}, s, { x: sx, y: sy, active: true }); }); } return next; } }; } },
+            { name: 'KALEIDOSCOPE N', category: 'Reflection', icon: 'snowflake', create: function () { var n = [6, 8, 12, 16][Math.floor(Math.random() * 4)]; return { color: '#fbbf24', desc: n + "분할 무작위 만화경 대칭.", logic: function (c) { var next = c.slice(); var center = GRID_SIZE / 2 - 0.5; var angleStep = (Math.PI * 2) / n; c.forEach(function (p) { if (!p.active) return; var dx = p.x - center, dy = p.y - center, r = Math.sqrt(dx * dx + dy * dy), startAngle = Math.atan2(dy, dx); for (var i = 1; i < n; i++) { var curAngle = startAngle + i * angleStep; var nx = Math.round(center + r * Math.cos(curAngle)), ny = Math.round(center + r * Math.sin(curAngle)); if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) next[ny * GRID_SIZE + nx] = Object.assign({}, p, { x: nx, y: ny }); } }); return next; } }; } }
         ];
 
         function startStudio(allR) {
             allRandomMode = allR; isChallengeMode = document.getElementById('game-mode-toggle').checked;
-
-            // NEW: Absolute Random Hex Mode logic
-            if (allRandomMode) {
-                colorPool = [];
-                for (var i = 0; i < 10; i++) {
-                    colorPool.push(getRandomHex());
-                }
-            }
-
-            if (isChallengeMode) { pickDeck(); showDeckReveal(); }
-            else { finalizeStart(); }
+            if (allRandomMode) { colorPool = []; for (var i = 0; i < 10; i++) colorPool.push(getRandomHex()); }
+            if (isChallengeMode) { pickDeck(); showDeckReveal(); } else { finalizeStart(); }
         }
 
         function pickDeck() {
@@ -665,7 +702,7 @@
                 var div = document.createElement('div');
                 div.className = 'glass p-4 flex flex-col items-center reveal-anim text-center';
                 div.style.animationDelay = (i * 0.1) + "s";
-                div.innerHTML = '<div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-cyan-400 mb-2"><i data-lucide="' + card.icon + '" class="w-5 h-5"></i></div><div class="text-[8px] text-slate-500 uppercase font-black mb-1">' + card.category + '</div><div class="text-[9px] font-black text-white uppercase">' + card.name + '</div>';
+                div.innerHTML = '<div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-cyan-400 mb-2"><i data-lucide="' + card.icon + '" class="w-5 h-5"></i></div><div class="text-[8px] text-slate-500 uppercase font-black mb-1">' + card.category + '</div><div class="text-[10px] font-black text-white uppercase">' + card.name + '</div>';
                 list.appendChild(div);
             });
             modal.classList.remove('hidden'); lucide.createIcons();
@@ -687,7 +724,6 @@
         }
 
         function initGrid() { cells = []; for (var y = 0; y < GRID_SIZE; y++) for (var x = 0; x < GRID_SIZE; x++) cells.push({ x: x, y: y, active: false, color: '#000' }); renderGrid(); }
-
         function renderGrid() {
             var el = document.getElementById('grid'); el.innerHTML = ''; el.style.gridTemplateColumns = "repeat(" + GRID_SIZE + ", 1fr)";
             var s = Math.min(window.innerWidth * 0.92, 650); el.style.width = el.style.height = s + "px";
